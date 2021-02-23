@@ -1,0 +1,24 @@
+# This diagram shows an early draft of the design
+# To generate picture copy this file to http://www.plantuml.com/plantuml/uml/SyfFKj2rKt3CoKnELR1Io4ZDoSa70000
+# or use the java tool plantuml.jar (can download from sourceforge)
+
+# TODO: Generate from buildscript.
+
+@startuml diagram
+  
+object Keyboard
+object Display
+object FileReader
+object Logger_StaticSingletonObject
+object TimersAndSound
+object InstructionInterpreter
+object MemoryAndRegisters
+
+
+Keyboard -- InstructionInterpreter
+MemoryAndRegisters -- Display
+MemoryAndRegisters -- InstructionInterpreter
+MemoryAndRegisters -- FileReader
+TimersAndSound -- InstructionInterpreter
+
+@enduml
