@@ -15,10 +15,10 @@ class Screen:
         self.HEIGHT = 32 * self.PIXEL_SIZE
         self.DISPLAY = pygame.display.set_mode((self.WIDTH, self.HEIGHT), 0, 1)
 
-        self.WHITE = (255, 255, 255)
-        self.BLACK = (0, 0, 0)
+        self.WHITE = (230, 230, 230)
+        self.BLACK = (20, 20, 20)
 
-        self.DISPLAY.fill(self.WHITE)
+        self.clear_all()
         logger.info("Screen initialized")
 
     # Run spin in main loop to check for pygame events and update screen
@@ -32,14 +32,14 @@ class Screen:
     def set_pixel(self, x, y):
         x = x * self.PIXEL_SIZE
         y = y * self.PIXEL_SIZE
-        pygame.draw.rect(self.DISPLAY, self.BLACK,
+        pygame.draw.rect(self.DISPLAY, self.WHITE,
                          (x, y, self.PIXEL_SIZE, self.PIXEL_SIZE))
 
     def clear_pixel(self, x, y):
         x = x * self.PIXEL_SIZE
         y = y * self.PIXEL_SIZE
-        pygame.draw.rect(self.DISPLAY, self.WHITE,
+        pygame.draw.rect(self.DISPLAY, self.BLACK,
                          (x, y, self.PIXEL_SIZE, self.PIXEL_SIZE))
 
     def clear_all(self):
-        self.DISPLAY.fill(self.WHITE)
+        self.DISPLAY.fill(self.BLACK)
