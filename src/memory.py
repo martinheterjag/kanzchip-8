@@ -2,6 +2,7 @@
 
 from log import logger
 
+
 class Memory:
     def __init__(self):
         # Allocate memory for all registers
@@ -10,17 +11,17 @@ class Memory:
         self.reg_vf = 0           # Flag register can be 1 or 0
         self.reg_delay = 0        # 8-bit timer
         self.reg_sound = 0        # 8-bit timer
-        self.program_counder = 0  # 16-bit PC
+        self.program_counter = 0  # 16-bit PC
         self.stack = [0] * 16     # 16-bit array
         self.stack_pointer = 0    # 8-bit
         logger.info("Registers initialized")
 
     def is_16_bit(self, value):
-        return (value > 0 and value < 0x10000)
+        return 0 < value < 0x10000
 
     def is_8_bit(self, value):
-        print ("value {}".format((value > 0 and value < 0x100)))
-        return (value > 0 and value < 0x100)
+        print("value {}".format((0 < value < 0x100)))
+        return 0 < value < 0x100
 
     def set_vx(self, vx, value):
         assert self.is_8_bit(value)
@@ -41,15 +42,15 @@ class Memory:
         self.reg_vf = flag
 
     def get_pc(self):
-        return self.program_counder
+        return self.program_counter
 
     def set_pc(self, value):
         assert self.is_16_bit(value)
-        self.program_counder = value
+        self.program_counter = value
 
     def incr_pc(self):
-        self.program_counder = self.program_counder + 1
+        self.program_counter = self.program_counter + 1
         # Emulate 16 bit register rollover
-        if self.program_counder > 0xFFFF:
+        if self.program_counter > 0xFFFF:
             logger.warning("program counter rollover")
-            self.program_counder = 0
+            self.program_counter = 0
