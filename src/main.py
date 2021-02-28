@@ -8,7 +8,7 @@ from memory import Memory
 VERSION = "0.0.1"
 
 
-if __name__ == "__main__":
+def main():
     logger.info("kanzchip-8, chip-8 emulator version " + VERSION + "-")
     screen = Screen()
     memory = Memory()
@@ -20,7 +20,8 @@ if __name__ == "__main__":
     x = 0
     y = 0
     count = 0
-    while(True):
+
+    while True:
         screen.spin()
         time.sleep(0.01)
         screen.set_pixel(x, y)
@@ -36,3 +37,7 @@ if __name__ == "__main__":
             screen.clear_all()
             count = 0
     # TODO: Test code ends here
+
+
+if __name__ == "__main__":
+    main()
