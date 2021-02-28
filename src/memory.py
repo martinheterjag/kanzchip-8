@@ -16,6 +16,10 @@ class Memory:
         self.stack_pointer = 0    # 8-bit
         logger.info("Registers initialized")
 
+        # 0x000 - 0xFFF (4095). 0x000-0x1FF is reserved.
+        # Most programs start at 0x200
+        self.memory = bytearray(4096)
+
     def is_16_bit(self, value):
         return 0 < value < 0x10000
 
