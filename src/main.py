@@ -11,7 +11,7 @@ VERSION = "0.0.1"
 def main():
     logger.info("kanzchip-8, chip-8 emulator version " + VERSION + "-")
     screen = Screen()
-    ii = InstructionInterpreter()
+    ii = InstructionInterpreter(screen)
     # TODO: Replace test code below
     x = 0
     y = 0
@@ -30,7 +30,7 @@ def main():
             y = 32 - y
         count = count + 1
         if count == 1200:
-            screen.clear_all()
+            ii.interpret_instruction(0x00E0)
             count = 0
     # TODO: Test code ends here
 

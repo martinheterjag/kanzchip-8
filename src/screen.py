@@ -7,13 +7,13 @@ from log import logger
 
 
 class Screen:
-    def __init__(self):
+    def __init__(self, flags=0):
         pygame.init()
-
+        print("pygame.HIDDEN", pygame.HIDDEN)
         self.PIXEL_SIZE = 20
         self.WIDTH = 64 * self.PIXEL_SIZE
         self.HEIGHT = 32 * self.PIXEL_SIZE
-        self.DISPLAY = pygame.display.set_mode((self.WIDTH, self.HEIGHT), 0, 1)
+        self.DISPLAY = pygame.display.set_mode((self.WIDTH, self.HEIGHT), flags, 1)
 
         self.WHITE = (230, 230, 230)
         self.BLACK = (20, 20, 20)
