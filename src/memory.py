@@ -8,7 +8,6 @@ class Memory:
         # Allocate memory for all registers
         self.reg_v = [0] * 16     # Vx where x is 0-15, 8.bit registers
         self.reg_i = 0            # 16-bit register
-        self.reg_vf = 0           # Flag register can be 1 or 0
         self.reg_delay = 0        # 8-bit timer
         self.reg_sound = 0        # 8-bit timer
         self.program_counter = 0  # 16-bit PC
@@ -19,38 +18,6 @@ class Memory:
         # 0x000 - 0xFFF (4095). 0x000-0x1FF is reserved.
         # Most programs start at 0x200
         self.memory = bytearray(4096)
-
-    def is_16_bit(self, value):
-        return 0 < value < 0x10000
-
-    def is_8_bit(self, value):
-        print("value {}".format((0 < value < 0x100)))
-        return 0 < value < 0x100
-
-    def set_vx(self, vx, value):
-        assert self.is_8_bit(value)
-        self.reg_v[vx] = value
-
-    def get_vx(self, vx):
-        return self.reg_v[vx]
-
-    def set_i(self, value):
-        assert self.is_16_bit(value)
-        self.reg_i = value
-
-    def get_i(self):
-        return self.reg_i
-
-    def set_vf(self, flag):
-        assert flag == 0 or flag == 1
-        self.reg_vf = flag
-
-    def get_pc(self):
-        return self.program_counter
-
-    def set_pc(self, value):
-        assert self.is_16_bit(value)
-        self.program_counter = value
 
     def incr_pc(self):
         self.program_counter = self.program_counter + 1
