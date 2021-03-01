@@ -22,7 +22,7 @@ class InstructionInterpreter:
         logger.info("InstructionInterpreter initialized")
 
     def incr_pc(self):
-        self.program_counter = self.program_counter + 1
+        self.program_counter += 2
         # Emulate 16 bit register rollover
         if self.program_counter > 0xFFFF:
             logger.warning("program counter rollover")
@@ -98,5 +98,3 @@ class InstructionInterpreter:
             # A lot of different LD variants + ADD (I, Vx)
             logger.warning("OpCode {:X} not yet supported ".format(instruction))
 
-        # TODO: Should we step PC here or will it be messy when OpCode==CALL?
-        self.program_counter += 1
