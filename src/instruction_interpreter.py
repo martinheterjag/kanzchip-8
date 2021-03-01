@@ -1,7 +1,6 @@
 # Copyright authors of kanzchip-8, licenced under MIT licence
 
 from log import logger
-from screen import Screen
 
 
 class InstructionInterpreter:
@@ -33,7 +32,7 @@ class InstructionInterpreter:
         # 00E0 and 00EE, rest can be ignored.
         if instruction == 0x00E0:  # CLS
             self.screen.clear_all()
-        elif isntruction == 0x00EE:  # RET
+        elif instruction == 0x00EE:  # RET
             logger.warning("OpCode {:X} not yet supported ".format(instruction))
         else:
             logger.warning("OpCode {:X} not supported!".format(instruction))
@@ -46,8 +45,8 @@ class InstructionInterpreter:
             return
 
         if instruction > 0xFFFF:
-            logger.warning ("Instruction {:X} bigger than 8 bit, using {:X}"
-                            .format(instruction, instruction % 0x10000))
+            logger.warning("Instruction {:X} bigger than 8 bit, using {:X}"
+                           .format(instruction, instruction % 0x10000))
             instruction %= 0x10000
 
         if instruction & 0xF000 == 0x0000:
