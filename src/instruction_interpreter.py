@@ -33,7 +33,8 @@ class InstructionInterpreter:
         if instruction == 0x00E0:  # CLS
             self.screen.clear_all()
         elif instruction == 0x00EE:  # RET
-            logger.warning("OpCode {:X} not yet supported ".format(instruction))
+            self.program_counter = self.stack[self.stack_pointer]
+            self.stack_pointer -= 1
         else:
             logger.warning("OpCode {:X} not supported!".format(instruction))
 
