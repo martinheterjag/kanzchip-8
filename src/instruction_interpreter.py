@@ -3,7 +3,7 @@
 from log import logger
 
 
-class Memory:
+class InstructionInterpreter:
     def __init__(self):
         # Allocate memory for all registers
         self.reg_v = [0] * 16     # Vx where x is 0-15, 8.bit registers
