@@ -112,7 +112,6 @@ class InstructionInterpreter:
             self.reg_v[x] = self.reg_v[x] >> 1
         elif last_nibble == 0x7:  # SUBN Vx, Vy
             if self.reg_v[y] <= self.reg_v[x]:
-                logger.info("WTF?")
                 tmp = self.reg_v[y] - self.reg_v[x]
                 self.reg_v[x] = 0x100 + tmp
                 self.reg_v[0xF] = 0
