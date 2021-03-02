@@ -84,6 +84,19 @@ class TestInstructions(unittest.TestCase):
         self.assertEqual(self.ii.reg_v[0xE], 0xFF)
         self.assertEqual(self.ii.reg_v[0xF], 0x00)
 
+    def test_8xy7_subn_vx_vy_no_borrow(self):
+        self.ii.reg_v[0xC] = 0x10
+        self.ii.reg_v[0xD] = 0x20
+        self.ii.interpret_instruction(0x8CD7)
+        self.assertEqual(self.ii.reg_v[0xC], 0x10)
+        self.assertEqual(self.ii.reg_v[0xF], 0x01)
+
+    def test_8xy7_subn_vx_vy_with_borrow(self):
+        self.ii.reg_v[0xE] = 0x01
+        self.ii.reg_v[0x0] = 0x00
+        self.ii.interpret_instruction(0x8E07)
+        self.assertEqual(self.ii.reg_v[0xE], 0xFF)
+        self.assertEqual(self.ii.reg_v[0xF], 0x00)
 
 if __name__ == '__main__':
     unittest.main()
