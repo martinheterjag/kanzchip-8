@@ -2,6 +2,25 @@
 
 from src.log import logger
 
+FONTS = (
+    0xF0, 0x90, 0x90, 0x90, 0xF0,  # 0
+    0x20, 0x60, 0x20, 0x20, 0x70,  # 1
+    0xF0, 0x10, 0xF0, 0x80, 0xF0,  # 2
+    0xF0, 0x10, 0xF0, 0x10, 0xF0,  # 3
+    0x90, 0x90, 0xF0, 0x10, 0x10,  # 4
+    0xF0, 0x80, 0xF0, 0x10, 0xF0,  # 5
+    0xF0, 0x80, 0xF0, 0x90, 0xF0,  # 6
+    0xF0, 0x10, 0x20, 0x40, 0x40,  # 7
+    0xF0, 0x90, 0xF0, 0x90, 0xF0,  # 8
+    0xF0, 0x90, 0xF0, 0x10, 0xF0,  # 9
+    0xF0, 0x90, 0xF0, 0x90, 0x90,  # A
+    0xE0, 0x90, 0xE0, 0x90, 0xE0,  # B
+    0xF0, 0x80, 0x80, 0x80, 0xF0,  # C
+    0xE0, 0x90, 0x90, 0x90, 0xE0,  # D
+    0xF0, 0x80, 0xF0, 0x80, 0xF0,  # E
+    0xF0, 0x80, 0xF0, 0x80, 0x80   # F
+)
+
 
 class InstructionInterpreter:
     def __init__(self, screen):
@@ -14,15 +33,25 @@ class InstructionInterpreter:
         self.stack = [0] * 16     # 16-bit array
         self.stack_pointer = 0    # 8-bit
 
-        # 0x000 - 0xFFF (4095). 0x000-0x1FF is reserved.
+        # Memory is 0x000 - 0xFFF (4095). 0x000-0x1FF is reserved.
         # Most programs start at 0x200
         self.memory = bytearray(4096)
+
+        for i, byte in enumerate(FONTS):
+            self.memory[i] = byte
+        logger.info("Fonts loaded in memory")
 
         # TODO: Decide if this should be a setting or not?
         self.CHIP_48 = False
 
         self.screen = screen
         logger.info("InstructionInterpreter initialized")
+
+    def load_rom(self, filename):
+        rom = open(filename, 'rb').read()
+        for i, val in enumerate(rom):
+            self.memory[0x200 + i] = val
+        self.program_counter = 0x200
 
     def incr_pc(self):
         self.program_counter += 2
@@ -98,7 +127,7 @@ class InstructionInterpreter:
 
     def interpret_instruction(self, instruction):
         if instruction < 0x00:
-            logger.error(f"Trying to pass a negative value {instruction:X} as instuction")
+            logger.error(f"Trying to pass a negative value {instruction:X} as instruction")
             return
 
         if instruction > 0xFFFF:
