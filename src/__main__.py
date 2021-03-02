@@ -1,9 +1,9 @@
 # Copyright authors of kanzchip-8, licenced under MIT licence
 
 import time
-from log import logger
-from screen import Screen
-from instruction_interpreter import InstructionInterpreter
+from .log import logger
+from .screen import Screen
+from .instruction_interpreter import InstructionInterpreter
 
 VERSION = "0.0.1"
 
