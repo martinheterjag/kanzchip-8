@@ -156,6 +156,16 @@ class InstructionInterpreter:
         else:
             logger.warning(f"OpCode {instruction:X} supported ")
 
+    def set_index_to_nnn(self, instruction):
+        """
+        Annn - LD I, addr
+        Set I = nnn.
+
+        The value of register I is set to nnn.
+        """
+        nnn = instruction & 0x0FFF
+        self.reg_i = nnn
+
     def interpret_instruction(self, instruction):
         if instruction < 0x00:
             logger.error(f"Trying to pass a negative value {instruction:X} as instruction")
@@ -197,7 +207,7 @@ class InstructionInterpreter:
             logger.warning(f"OpCode {instruction:X} not yet supported ")
         elif instruction & 0xF000 == 0xA000:
             # LD (Vx, Vy)
-            logger.warning(f"OpCode {instruction:X} not yet supported ")
+            self.set_index_to_nnn(instruction)
         elif instruction & 0xF000 == 0xB000:
             # JP V0
             logger.warning(f"OpCode {instruction:X} not yet supported ")

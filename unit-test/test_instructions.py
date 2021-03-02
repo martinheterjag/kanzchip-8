@@ -62,6 +62,13 @@ class TestInstructions(unittest.TestCase):
         self.ii.interpret_instruction(0x81A0)
         self.assertEqual(self.ii.reg_v[0xA], 0x12)
 
+    def test_annn_set_i_to_nnn(self):
+        self.ii.interpret_instruction(0xA120)
+        self.assertEqual(self.ii.reg_i, 0x120)
+
+        self.ii.interpret_instruction(0xAFBB)
+        self.assertEqual(self.ii.reg_i, 0xFBB)
+
 
 if __name__ == '__main__':
     unittest.main()
