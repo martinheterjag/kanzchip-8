@@ -47,7 +47,8 @@ class InstructionInterpreter:
         y = (instruction & 0x00F0) >> 4
         last_nibble = instruction & 0x000F
 
-        logger.debug(f"instruction:{instruction:X} x:{x:X} y:{y:X}")
+        logger.debug(f"instruction:{instruction:X} x:{x:X}(0x{self.reg_v[x]:X})"
+                     f" y:{y:X}(0x{self.reg_v[y]:X})")
         if last_nibble == 0x0:  # LD Vx, Vy
             self.reg_v[x] = self.reg_v[y]
         elif last_nibble == 0x1:  # OR Vx, Vy
@@ -64,14 +65,14 @@ class InstructionInterpreter:
                 self.reg_v[0xF] = 0
             self.reg_v[x] = (self.reg_v[x] + self.reg_v[y]) % 0x100
         elif last_nibble == 0x5:  # SUB Vx, Vy
-            # If negative, wrap around and set Vf as carry
-            if self.reg_v[x] > self.reg_v[y]:
+            if self.reg_v[x] < self.reg_v[y]:
                 tmp = self.reg_v[x] - self.reg_v[y]
-                self.reg_v[x] = 0x100 - tmp
-                self.reg_v[0xF] = 1
-            else:
-                self.reg_v[x] = self.reg_v[x] - self.reg_v[y]
+                self.reg_v[x] = 0x100 + tmp  # + since tmp is negative
                 self.reg_v[0xF] = 0
+            else:
+                logger.info("X is bigger than Y")
+                self.reg_v[x] = self.reg_v[x] - self.reg_v[y]
+                self.reg_v[0xF] = 1
         elif last_nibble == 0x6:  # SHR Vx {, Vy}
             # Vf shall be set to same value as the bit that is shifted out
             if self.CHIP_48:
