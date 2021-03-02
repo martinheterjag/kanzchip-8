@@ -3,7 +3,6 @@
 from log import logger
 
 
-
 class InstructionInterpreter:
     def __init__(self, screen):
         # Allocate memory for all registers
@@ -62,35 +61,35 @@ class InstructionInterpreter:
             if self.reg_v[x] + self.reg_v[y] > 0xFF:
                 self.reg_v[0xF] = 1
             else:
-                 self.reg_v[0xF] = 0
+                self.reg_v[0xF] = 0
             self.reg_v[x] = (self.reg_v[x] + self.reg_v[y]) % 0x100
         elif last_nibble == 0x5:  # SUB Vx, Vy
             # If negative, wrap around and set Vf as carry
-            if reg_v[x] > reg_v[y]:
+            if self.reg_v[x] > self.reg_v[y]:
                 tmp = self.reg_v[x] - self.reg_v[y]
-                rev[x] = 0x100 - tmp
+                self.reg_v[x] = 0x100 - tmp
                 self.reg_v[0xF] = 1
             else:
                 self.reg_v[x] = self.reg_v[x] - self.reg_v[y]
                 self.reg_v[0xF] = 0
         elif last_nibble == 0x6:  # SHR Vx {, Vy}
             # Vf shall be set to same value as the bit that is shifted out
-            if CHIP_48 == True:
+            if self.CHIP_48:
                 self.reg_v[x] = self.reg_v[y]
             self.reg_v[0xF] = self.reg_v[x] & 0x0001
             self.reg_v[x] = self.reg_v[x] >> 1
         elif last_nibble == 0x7:  # SUBN Vx, Vy
             # If negative, wrap around and set Vf as carry
-            if reg_v[y] > reg_v[x]:
+            if self.reg_v[y] > self.reg_v[x]:
                 tmp = self.reg_v[y] - self.reg_v[x]
-                rev[x] = 0x100 - tmp
+                self.rev[x] = 0x100 - tmp
                 self.reg_v[0xF] = 1
             else:
                 self.reg_v[x] = self.reg_v[y] - self.reg_v[x]
                 self.reg_v[0xF] = 0
         elif last_nibble == 0xE:  # SHL Vx {, Vy}
             # Vf shall be set to same value as the bit that is shifted out
-            if CHIP_48 == True:
+            if self.CHIP_48:
                 self.reg_v[x] = self.reg_v[y]
             self.reg_v[0xF] = self.reg_v[x] & 0x8000
             self.reg_v[x] = self.reg_v[x] << 1
@@ -156,4 +155,3 @@ class InstructionInterpreter:
         elif instruction & 0xF000 == 0xF000:
             # A lot of different LD variants + ADD (I, Vx)
             logger.warning("OpCode {:X} not yet supported ".format(instruction))
-
