@@ -70,6 +70,9 @@ class InstructionInterpreter:
         else:
             logger.warning(f"OpCode {instruction:X} not supported!")
 
+    def jump(self, instruction):
+        self.program_counter = instruction & 0x0FFF
+
     def interpret_group_8(self, instruction):
         # Logic and arithmetic operations between Vx and Vy
         x = (instruction & 0x0F00) >> 8
@@ -139,7 +142,7 @@ class InstructionInterpreter:
             self.interpret_group_0(instruction)
         elif instruction & 0xF000 == 0x1000:
             # JP
-            logger.warning(f"OpCode {instruction:X} not yet supported ")
+            self.jump(instruction)
         elif instruction & 0xF000 == 0x2000:
             # CALL
             logger.warning(f"OpCode {instruction:X} not yet supported ")
