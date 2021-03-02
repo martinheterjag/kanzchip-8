@@ -79,7 +79,7 @@ class InstructionInterpreter:
         """
         self.program_counter = instruction & 0x0FFF
 
-    def set_vx_kk(self, instruction):
+    def set_vx_to_kk(self, instruction):
         """
         6xkk - LD Vx, byte
         Set Vx = kk.
@@ -174,7 +174,7 @@ class InstructionInterpreter:
             logger.warning(f"OpCode {instruction:X} not yet supported ")
         elif instruction & 0xF000 == 0x6000:
             # LD (Vx, Byte)
-            self.set_vx_kk(instruction)
+            self.set_vx_to_kk(instruction)
         elif instruction & 0xF000 == 0x7000:
             # ADD (Vx, Byte)
             logger.warning(f"OpCode {instruction:X} not yet supported ")
