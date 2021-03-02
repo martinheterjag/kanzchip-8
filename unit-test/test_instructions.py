@@ -113,6 +113,18 @@ class TestInstructions(unittest.TestCase):
         self.assertEqual(self.ii.reg_v[0xE], 0xFF)
         self.assertEqual(self.ii.reg_v[0xF], 0x00)
 
+    def test_8xy6_shr_vx_vy_no_carry(self):
+        self.ii.reg_v[0x0] = 0b01000000
+        self.ii.interpret_instruction(0x8006)
+        self.assertEqual(self.ii.reg_v[0x0], 0b00100000)
+        self.assertEqual(self.ii.reg_v[0xF], 0x00)
+
+    def test_8xy6_shr_vx_vy_with_carry(self):
+        self.ii.reg_v[0x0] = 0b01000001
+        self.ii.interpret_instruction(0x8006)
+        self.assertEqual(self.ii.reg_v[0x0], 0b00100000)
+        self.assertEqual(self.ii.reg_v[0xF], 0x01)
+
     def test_8xy7_subn_vx_vy_no_borrow(self):
         self.ii.reg_v[0xC] = 0x10
         self.ii.reg_v[0xD] = 0x20
@@ -133,6 +145,19 @@ class TestInstructions(unittest.TestCase):
 
         self.ii.interpret_instruction(0xAFBB)
         self.assertEqual(self.ii.reg_i, 0xFBB)
+
+
+    def test_8xyE_shl_vx_vy_no_carry(self):
+        self.ii.reg_v[0x0] = 0b01000000
+        self.ii.interpret_instruction(0x800E)
+        self.assertEqual(self.ii.reg_v[0x0], 0b10000000)
+        self.assertEqual(self.ii.reg_v[0xF], 0x00)
+
+    def test_8xyE_shl_vx_vy_with_carry(self):
+        self.ii.reg_v[0x0] = 0b11000001
+        self.ii.interpret_instruction(0x800E)
+        self.assertEqual(self.ii.reg_v[0x0], 0b10000010)
+        self.assertEqual(self.ii.reg_v[0xF], 0x01)
 
 
 if __name__ == '__main__':
