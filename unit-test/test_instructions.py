@@ -1,8 +1,8 @@
 import unittest
 from unittest.mock import Mock
-import sys
-sys.path.append('../src')
-from instruction_interpreter import InstructionInterpreter
+
+from src.instruction_interpreter import InstructionInterpreter
+
 
 class TestInstructions(unittest.TestCase):
     # Test is supposed to verify that 0x00E0 will clear the screen
@@ -27,6 +27,7 @@ class TestInstructions(unittest.TestCase):
         self.assertEqual(ii.reg_v[0x1], 0x11)
         ii.interpret_instruction(0x81A0)
         self.assertEqual(ii.reg_v[0xA], 0x12)
+
 
 if __name__ == '__main__':
     unittest.main()

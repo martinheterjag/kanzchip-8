@@ -3,7 +3,7 @@
 import pygame
 import sys
 from pygame.locals import *
-from log import logger
+from src.log import logger
 
 
 class Screen:
