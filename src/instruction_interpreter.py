@@ -122,8 +122,8 @@ class InstructionInterpreter:
             # Vf shall be set to same value as the bit that is shifted out
             if self.CHIP_48:
                 self.reg_v[x] = self.reg_v[y]
-            self.reg_v[0xF] = self.reg_v[x] & 0x8000
-            self.reg_v[x] = self.reg_v[x] << 1
+            self.reg_v[0xF] = (self.reg_v[x] & 0x80) >> 7
+            self.reg_v[x] = (self.reg_v[x] << 1) % 0x100
         else:
             logger.warning(f"OpCode {instruction:X} supported ")
 
