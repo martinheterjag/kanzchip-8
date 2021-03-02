@@ -140,3 +140,5 @@ cython_debug/
 # IDE Files
 .idea/
 .vscode/
+*.sublime-project
+*.sublime-workspace
