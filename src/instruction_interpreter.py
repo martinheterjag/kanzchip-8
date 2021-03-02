@@ -42,7 +42,6 @@ class InstructionInterpreter:
         if instruction < 0x00:
             logger.error("Trying to pass a negative value {:X} as instuction"
                          .format(instruction))
-            self.program_counter += 1
             return
 
         if instruction > 0xFFFF:
