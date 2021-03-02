@@ -90,6 +90,17 @@ class InstructionInterpreter:
         kk = instruction & 0x00FF
         self.reg_v[x] = kk
 
+    def add_kk_to_vx(self, instruction):
+        """
+        7xkk - ADD Vx, byte
+        Set Vx = Vx + kk.
+
+        Adds the value kk to the value of register Vx, then stores the result in Vx.
+        """
+        x = (instruction & 0x0F00) >> 8
+        kk = instruction & 0x00FF
+        self.reg_v[x] += kk
+
     def interpret_group_8(self, instruction):
         # Logic and arithmetic operations between Vx and Vy
         x = (instruction & 0x0F00) >> 8
@@ -177,7 +188,7 @@ class InstructionInterpreter:
             self.set_vx_to_kk(instruction)
         elif instruction & 0xF000 == 0x7000:
             # ADD (Vx, Byte)
-            logger.warning(f"OpCode {instruction:X} not yet supported ")
+            self.add_kk_to_vx(instruction)
         elif instruction & 0xF000 == 0x8000:
             # Arithmetic (Vx + Vy, Vx xor Vy etc.)
             self.interpret_group_8(instruction)
