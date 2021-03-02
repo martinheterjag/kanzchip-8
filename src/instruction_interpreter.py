@@ -82,7 +82,7 @@ class InstructionInterpreter:
             # If negative, wrap around and set Vf as carry
             if self.reg_v[y] > self.reg_v[x]:
                 tmp = self.reg_v[y] - self.reg_v[x]
-                self.rev[x] = 0x100 - tmp
+                self.reg_v[x] = 0x100 - tmp
                 self.reg_v[0xF] = 1
             else:
                 self.reg_v[x] = self.reg_v[y] - self.reg_v[x]
