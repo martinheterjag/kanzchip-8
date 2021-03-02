@@ -164,14 +164,6 @@ class TestInstructions(unittest.TestCase):
         self.assertEqual(self.ii.reg_v[0xE], 0xFF)
         self.assertEqual(self.ii.reg_v[0xF], 0x00)
 
-    def test_annn_set_i_to_nnn(self):
-        self.ii.interpret_instruction(0xA120)
-        self.assertEqual(self.ii.reg_i, 0x120)
-
-        self.ii.interpret_instruction(0xAFBB)
-        self.assertEqual(self.ii.reg_i, 0xFBB)
-
-
     def test_8xyE_shl_vx_vy_no_carry(self):
         self.ii.reg_v[0x0] = 0b01000000
         self.ii.interpret_instruction(0x800E)
@@ -184,6 +176,12 @@ class TestInstructions(unittest.TestCase):
         self.assertEqual(self.ii.reg_v[0x0], 0b10000010)
         self.assertEqual(self.ii.reg_v[0xF], 0x01)
 
+    def test_annn_set_i_to_nnn(self):
+        self.ii.interpret_instruction(0xA120)
+        self.assertEqual(self.ii.reg_i, 0x120)
+
+        self.ii.interpret_instruction(0xAFBB)
+        self.assertEqual(self.ii.reg_i, 0xFBB)
 
 if __name__ == '__main__':
     unittest.main()
