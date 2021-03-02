@@ -38,6 +38,52 @@ class TestInstructions(unittest.TestCase):
         self.ii.interpret_instruction(0x81A0)
         self.assertEqual(self.ii.reg_v[0xA], 0x12)
 
+    def test_8xy1_or_vx_vy(self):
+        self.ii.reg_v[0x2] = 0xF0
+        self.ii.reg_v[0x3] = 0x0F
+        self.ii.interpret_instruction(0x8231)
+        self.assertEqual(self.ii.reg_v[0x2], 0xFF)
+
+    def test_8xy2_and_vx_vy(self):
+        self.ii.reg_v[0x4] = 0xF0
+        self.ii.reg_v[0x5] = 0xAF
+        self.ii.interpret_instruction(0x8452)
+        self.assertEqual(self.ii.reg_v[0x4], 0xA0)
+
+    def test_8xy3_xor_vx_vy(self):
+        self.ii.reg_v[0x6] = 0xFF
+        self.ii.reg_v[0x7] = 0xA5
+        self.ii.interpret_instruction(0x8673)
+        self.assertEqual(self.ii.reg_v[0x6], 0x5A)
+
+    def test_8xy4_add_vx_vy_no_carry(self):
+        self.ii.reg_v[0x8] = 0x11
+        self.ii.reg_v[0x9] = 0x11
+        self.ii.interpret_instruction(0x8894)
+        self.assertEqual(self.ii.reg_v[0x8], 0x22)
+        self.assertEqual(self.ii.reg_v[0xF], 0x00)
+
+    def test_8xy4_add_vx_vy_with_carry(self):
+        self.ii.reg_v[0xA] = 0xFF
+        self.ii.reg_v[0xB] = 0x03
+        self.ii.interpret_instruction(0x8AB4)
+        self.assertEqual(self.ii.reg_v[0xA], 0x02)
+        self.assertEqual(self.ii.reg_v[0xF], 0x01)
+
+    def test_8xy5_sub_vx_vy_no_borrow(self):
+        self.ii.reg_v[0xC] = 0x20
+        self.ii.reg_v[0xD] = 0x10
+        self.ii.interpret_instruction(0x8CD5)
+        self.assertEqual(self.ii.reg_v[0xC], 0x10)
+        self.assertEqual(self.ii.reg_v[0xF], 0x01)
+
+    def test_8xy5_sub_vx_vy_with_borrow(self):
+        self.ii.reg_v[0xE] = 0x00
+        self.ii.reg_v[0x0] = 0x01
+        self.ii.interpret_instruction(0x8E05)
+        self.assertEqual(self.ii.reg_v[0xE], 0xFF)
+        self.assertEqual(self.ii.reg_v[0xF], 0x00)
+
 
 if __name__ == '__main__':
     unittest.main()
