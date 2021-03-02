@@ -39,7 +39,7 @@ class InstructionInterpreter:
             self.program_counter = self.stack[self.stack_pointer]
             self.stack_pointer -= 1
         else:
-            logger.warning("OpCode {:X} not supported!".format(instruction))
+            logger.warning(f"OpCode {instruction:X} not supported!")
 
     def interpret_group_8(self, instruction):
         # Logic and arithmetic operations between Vx and Vy
@@ -47,7 +47,7 @@ class InstructionInterpreter:
         y = (instruction & 0x00F0) >> 4
         last_nibble = instruction & 0x000F
 
-        logger.debug("instruction:{:X} x:{:X} y:{:X}".format(instruction, x, y))
+        logger.debug(f"instruction:{instruction:X} x:{x:X} y:{y:X}")
         if last_nibble == 0x0:  # LD Vx, Vy
             self.reg_v[x] = self.reg_v[y]
         elif last_nibble == 0x1:  # OR Vx, Vy
@@ -94,17 +94,15 @@ class InstructionInterpreter:
             self.reg_v[0xF] = self.reg_v[x] & 0x8000
             self.reg_v[x] = self.reg_v[x] << 1
         else:
-            logger.warning("OpCode {:X} supported ".format(instruction))
+            logger.warning(f"OpCode {instruction:X} supported ")
 
     def interpret_instruction(self, instruction):
         if instruction < 0x00:
-            logger.error("Trying to pass a negative value {:X} as instuction"
-                         .format(instruction))
+            logger.error(f"Trying to pass a negative value {instruction:X} as instuction")
             return
 
         if instruction > 0xFFFF:
-            logger.warning("Instruction {:X} bigger than 8 bit, using {:X}"
-                           .format(instruction, instruction % 0x10000))
+            logger.warning(f"Instruction {instruction:X} bigger than 8 bit, using {instruction % 0x10000:X}")
             instruction %= 0x10000
 
         if instruction & 0xF000 == 0x0000:
@@ -112,46 +110,46 @@ class InstructionInterpreter:
             self.interpret_group_0(instruction)
         elif instruction & 0xF000 == 0x1000:
             # JP
-            logger.warning("OpCode {:X} not yet supported ".format(instruction))
+            logger.warning(f"OpCode {instruction:X} not yet supported ")
         elif instruction & 0xF000 == 0x2000:
             # CALL
-            logger.warning("OpCode {:X} not yet supported ".format(instruction))
+            logger.warning(f"OpCode {instruction:X} not yet supported ")
         elif instruction & 0xF000 == 0x3000:
             # SE
-            logger.warning("OpCode {:X} not yet supported ".format(instruction))
+            logger.warning(f"OpCode {instruction:X} not yet supported ")
         elif instruction & 0xF000 == 0x4000:
             # SNE
-            logger.warning("OpCode {:X} not yet supported ".format(instruction))
+            logger.warning(f"OpCode {instruction:X} not yet supported ")
         elif instruction & 0xF000 == 0x5000:
             # SE
-            logger.warning("OpCode {:X} not yet supported ".format(instruction))
+            logger.warning(f"OpCode {instruction:X} not yet supported ")
         elif instruction & 0xF000 == 0x6000:
             # LD (Vx, Byte)
-            logger.warning("OpCode {:X} not yet supported ".format(instruction))
+            logger.warning(f"OpCode {instruction:X} not yet supported ")
         elif instruction & 0xF000 == 0x7000:
             # ADD (Vx, Byte)
-            logger.warning("OpCode {:X} not yet supported ".format(instruction))
+            logger.warning(f"OpCode {instruction:X} not yet supported ")
         elif instruction & 0xF000 == 0x8000:
             # Arithmetic (Vx + Vy, Vx xor Vy etc.)
             self.interpret_group_8(instruction)
         elif instruction & 0xF000 == 0x9000:
             # SNE
-            logger.warning("OpCode {:X} not yet supported ".format(instruction))
+            logger.warning(f"OpCode {instruction:X} not yet supported ")
         elif instruction & 0xF000 == 0xA000:
             # LD (Vx, Vy)
-            logger.warning("OpCode {:X} not yet supported ".format(instruction))
+            logger.warning(f"OpCode {instruction:X} not yet supported ")
         elif instruction & 0xF000 == 0xB000:
             # JP V0
-            logger.warning("OpCode {:X} not yet supported ".format(instruction))
+            logger.warning(f"OpCode {instruction:X} not yet supported ")
         elif instruction & 0xF000 == 0xC000:
             # RND
-            logger.warning("OpCode {:X} not yet supported ".format(instruction))
+            logger.warning(f"OpCode {instruction:X} not yet supported ")
         elif instruction & 0xF000 == 0xD000:
             # DRW
-            logger.warning("OpCode {:X} not yet supported ".format(instruction))
+            logger.warning(f"OpCode {instruction:X} not yet supported ")
         elif instruction & 0xF000 == 0xE000:
             # SKP, SKNP
-            logger.warning("OpCode {:X} not yet supported ".format(instruction))
+            logger.warning(f"OpCode {instruction:X} not yet supported ")
         elif instruction & 0xF000 == 0xF000:
             # A lot of different LD variants + ADD (I, Vx)
-            logger.warning("OpCode {:X} not yet supported ".format(instruction))
+            logger.warning(f"OpCode {instruction:X} not yet supported ")
