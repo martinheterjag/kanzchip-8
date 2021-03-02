@@ -1,6 +1,6 @@
 # Copyright authors of kanzchip-8, licenced under MIT licence
 
-from .log import logger
+from src.log import logger
 
 
 class InstructionInterpreter:

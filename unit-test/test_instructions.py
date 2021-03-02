@@ -1,6 +1,5 @@
 import unittest
 from unittest.mock import Mock
-
 from src.instruction_interpreter import InstructionInterpreter
 
 
@@ -23,6 +22,8 @@ class TestInstructions(unittest.TestCase):
 
         self.assertEqual(self.ii.stack_pointer, 0)
         self.assertEqual(self.ii.program_counter, 500)
+
+    # def test_2nnn_jump(self):
 
     # Test is supposed to verify that 8xy0 load ii.reg_v[y] into ii.reg_v[x]
     def test_8xy0_load_vx_vy(self):
