@@ -33,6 +33,13 @@ class TestInstructions(unittest.TestCase):
             jump = instruction & 0x0FFF
             self.assertEqual(self.ii.program_counter, jump)
 
+    def test_6xkk_set_vx_kk(self):
+        self.ii.interpret_instruction(0x62F3)
+        self.assertEqual(self.ii.reg_v[0x2], 0xF3)
+
+        self.ii.interpret_instruction(0x6A12)
+        self.assertEqual(self.ii.reg_v[0xA], 0x12)
+
     # Test is supposed to verify that 8xy0 load ii.reg_v[y] into ii.reg_v[x]
     def test_8xy0_load_vx_vy(self):
         self.ii.reg_v[0x0] = 0x10

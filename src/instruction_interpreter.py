@@ -71,7 +71,24 @@ class InstructionInterpreter:
             logger.warning(f"OpCode {instruction:X} not supported!")
 
     def jump(self, instruction):
+        """
+        1nnn - JP addr
+        Jump to location nnn.
+
+        The interpreter sets the program counter to nnn.
+        """
         self.program_counter = instruction & 0x0FFF
+
+    def set_vx_kk(self, instruction):
+        """
+        6xkk - LD Vx, byte
+        Set Vx = kk.
+
+        The interpreter puts the value kk into register Vx.
+        """
+        x = (instruction & 0x0F00) >> 8
+        kk = instruction & 0x00FF
+        self.reg_v[x] = kk
 
     def interpret_group_8(self, instruction):
         # Logic and arithmetic operations between Vx and Vy
@@ -157,7 +174,7 @@ class InstructionInterpreter:
             logger.warning(f"OpCode {instruction:X} not yet supported ")
         elif instruction & 0xF000 == 0x6000:
             # LD (Vx, Byte)
-            logger.warning(f"OpCode {instruction:X} not yet supported ")
+            self.set_vx_kk(instruction)
         elif instruction & 0xF000 == 0x7000:
             # ADD (Vx, Byte)
             logger.warning(f"OpCode {instruction:X} not yet supported ")
