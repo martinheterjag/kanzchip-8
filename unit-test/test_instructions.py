@@ -23,7 +23,15 @@ class TestInstructions(unittest.TestCase):
         self.assertEqual(self.ii.stack_pointer, 0)
         self.assertEqual(self.ii.program_counter, 500)
 
-    # def test_2nnn_jump(self):
+    # Test that the program counter to set to the address in the last 3 nibbles
+    def test_1nnn_jump(self):
+        self.ii.interpret_instruction(0x11FF)
+        self.assertEqual(self.ii.program_counter, 0x01FF)
+
+        for instruction in range(0x1200, 0x2000):
+            self.ii.interpret_instruction(instruction)
+            jump = instruction & 0x0FFF
+            self.assertEqual(self.ii.program_counter, jump)
 
     # Test is supposed to verify that 8xy0 load ii.reg_v[y] into ii.reg_v[x]
     def test_8xy0_load_vx_vy(self):
