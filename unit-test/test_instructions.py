@@ -48,6 +48,11 @@ class TestInstructions(unittest.TestCase):
         self.ii.interpret_instruction(0x7AB1)
         self.assertEqual(self.ii.reg_v[0xA], 0xD3)
 
+        # test overflow
+        self.ii.reg_v[0x1] = 0xD3
+        self.ii.interpret_instruction(0x7153)
+        self.assertEqual(self.ii.reg_v[0x1], 0x26)
+
     # Test is supposed to verify that 8xy0 load ii.reg_v[y] into ii.reg_v[x]
     def test_8xy0_load_vx_vy(self):
         self.ii.reg_v[0x0] = 0x10

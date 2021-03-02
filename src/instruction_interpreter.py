@@ -99,7 +99,7 @@ class InstructionInterpreter:
         """
         x = (instruction & 0x0F00) >> 8
         kk = instruction & 0x00FF
-        self.reg_v[x] += kk
+        self.reg_v[x] = (self.reg_v[x] + kk) & 0x00FF  # discard extra bits
 
     def interpret_group_8(self, instruction):
         # Logic and arithmetic operations between Vx and Vy
