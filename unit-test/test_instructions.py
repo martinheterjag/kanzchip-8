@@ -33,6 +33,21 @@ class TestInstructions(unittest.TestCase):
             jump = instruction & 0x0FFF
             self.assertEqual(self.ii.program_counter, jump)
 
+    def test_6xkk_set_vx_to_kk(self):
+        self.ii.interpret_instruction(0x62F3)
+        self.assertEqual(self.ii.reg_v[0x2], 0xF3)
+
+        self.ii.interpret_instruction(0x6A12)
+        self.assertEqual(self.ii.reg_v[0xA], 0x12)
+
+    def test_7xkk_add_vx_to_kk(self):
+        self.ii.reg_v[0xA] = 0x12
+        self.ii.interpret_instruction(0x7A10)
+        self.assertEqual(self.ii.reg_v[0xA], 0x22)
+
+        self.ii.interpret_instruction(0x7AB1)
+        self.assertEqual(self.ii.reg_v[0xA], 0xD3)
+
     # Test is supposed to verify that 8xy0 load ii.reg_v[y] into ii.reg_v[x]
     def test_8xy0_load_vx_vy(self):
         self.ii.reg_v[0x0] = 0x10
@@ -106,6 +121,14 @@ class TestInstructions(unittest.TestCase):
         self.ii.interpret_instruction(0x8E07)
         self.assertEqual(self.ii.reg_v[0xE], 0xFF)
         self.assertEqual(self.ii.reg_v[0xF], 0x00)
+    
+    def test_annn_set_i_to_nnn(self):
+        self.ii.interpret_instruction(0xA120)
+        self.assertEqual(self.ii.reg_i, 0x120)
+
+        self.ii.interpret_instruction(0xAFBB)
+        self.assertEqual(self.ii.reg_i, 0xFBB)
+
 
 if __name__ == '__main__':
     unittest.main()
