@@ -281,9 +281,10 @@ class InstructionInterpreter:
             hundreds digit in memory at location in I, the tens digit at
             location I+1, and the ones digit at location I+2.
             '''
-            self.memory[self.reg_i] = int(str(self.reg_v[x])[0])  # Hundreds digit
-            self.memory[self.reg_i + 1] = int(str(self.reg_v[x])[1])  # Tens digit
-            self.memory[self.reg_i + 2] = int(str(self.reg_v[x])[2])  # Ones digit
+            digits = format(self.reg_v[x], "03d")
+            self.memory[self.reg_i] = int(digits[0])  # Hundreds digit
+            self.memory[self.reg_i + 1] = int(digits[1])  # Tens digit
+            self.memory[self.reg_i + 2] = int(digits[2])  # Ones digit
 
         elif instruction & 0xFF == 0x55:
             '''
