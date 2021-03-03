@@ -209,6 +209,50 @@ class TestInstructions(unittest.TestCase):
         self.ii.interpret_instruction(0xF118)
         self.assertEqual(self.ii.reg_sound, 0x10)
 
+    def test_fx55_save_reg_v0_through_vx_to_memory(self):
+        self.ii.reg_i = 0x500
+        for i in range(0x0, 0xF):
+            self.ii.reg_v[i] = 0x10 + i
+        self.ii.interpret_instruction(0xFE55)
+        self.assertEqual(self.ii.memory[0x500], 0x10)
+        self.assertEqual(self.ii.memory[0x501], 0x11)
+        self.assertEqual(self.ii.memory[0x502], 0x12)
+        self.assertEqual(self.ii.memory[0x503], 0x13)
+        self.assertEqual(self.ii.memory[0x504], 0x14)
+        self.assertEqual(self.ii.memory[0x505], 0x15)
+        self.assertEqual(self.ii.memory[0x506], 0x16)
+        self.assertEqual(self.ii.memory[0x507], 0x17)
+        self.assertEqual(self.ii.memory[0x508], 0x18)
+        self.assertEqual(self.ii.memory[0x509], 0x19)
+        self.assertEqual(self.ii.memory[0x50A], 0x1A)
+        self.assertEqual(self.ii.memory[0x50B], 0x1B)
+        self.assertEqual(self.ii.memory[0x50C], 0x1C)
+        self.assertEqual(self.ii.memory[0x50D], 0x1D)
+        self.assertEqual(self.ii.memory[0x50E], 0x1E)
+
+    def test_fx65_save_memory_to_reg_v0_through_vx(self):
+        self.ii.reg_i = 0x500
+        for i in range(0x0, 0xF):
+            self.ii.memory[self.ii.reg_i + i] = 0x10 + i
+        self.ii.interpret_instruction(0xFE65)
+        self.assertEqual(self.ii.reg_v[0x0], 0x10)
+        self.assertEqual(self.ii.reg_v[0x1], 0x11)
+        self.assertEqual(self.ii.reg_v[0x2], 0x12)
+        self.assertEqual(self.ii.reg_v[0x3], 0x13)
+        self.assertEqual(self.ii.reg_v[0x4], 0x14)
+        self.assertEqual(self.ii.reg_v[0x5], 0x15)
+        self.assertEqual(self.ii.reg_v[0x6], 0x16)
+        self.assertEqual(self.ii.reg_v[0x7], 0x17)
+        self.assertEqual(self.ii.reg_v[0x8], 0x18)
+        self.assertEqual(self.ii.reg_v[0x9], 0x19)
+        self.assertEqual(self.ii.reg_v[0xA], 0x1A)
+        self.assertEqual(self.ii.reg_v[0xB], 0x1B)
+        self.assertEqual(self.ii.reg_v[0xC], 0x1C)
+        self.assertEqual(self.ii.reg_v[0xD], 0x1D)
+        self.assertEqual(self.ii.reg_v[0xE], 0x1E)
+
+
+
 
 if __name__ == '__main__':
     unittest.main()
