@@ -221,6 +221,21 @@ class TestInstructions(unittest.TestCase):
         self.ii.interpret_instruction(0xF118)
         self.assertEqual(self.ii.reg_sound, 0x10)
 
+    def test_fx33_save_reg_vx_bcd_representation_to_memory(self):
+        self.ii.reg_i = 0x500
+        self.ii.reg_v[0xA] = 254
+        self.ii.interpret_instruction(0xFA33)
+        self.assertEqual(self.ii.memory[0x500], 2)
+        self.assertEqual(self.ii.memory[0x501], 5)
+        self.assertEqual(self.ii.memory[0x502], 4)
+
+        self.ii.reg_i = 0x500
+        self.ii.reg_v[0xA] = 19
+        self.ii.interpret_instruction(0xFA33)
+        self.assertEqual(self.ii.memory[0x500], 0)
+        self.assertEqual(self.ii.memory[0x501], 1)
+        self.assertEqual(self.ii.memory[0x502], 9)
+
     def test_fx55_save_reg_v0_through_vx_to_memory(self):
         self.ii.reg_i = 0x500
         for i in range(0x0, 0xF):
