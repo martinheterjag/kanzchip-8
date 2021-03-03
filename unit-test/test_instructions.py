@@ -192,6 +192,11 @@ class TestInstructions(unittest.TestCase):
         self.ii.interpret_instruction(0xAFBB)
         self.assertEqual(self.ii.reg_i, 0xFBB)
 
+    def test_fx07_set_delay_timer_to_vx(self):
+        self.ii.reg_delay = 0x20
+        self.ii.interpret_instruction(0xF107)
+        self.assertEqual(self.ii.reg_v[0x1], 0x20)
+
     def test_fx15_set_delay_timer_to_vx(self):
         self.assertEqual(self.ii.reg_delay, 0x0)
         self.ii.reg_v[0x1] = 0x10
