@@ -1,5 +1,5 @@
 import unittest
-from unittest.mock import Mock
+from unittest.mock import Mock, patch
 
 from src.instruction_interpreter import InstructionInterpreter
 
@@ -192,6 +192,15 @@ class TestInstructions(unittest.TestCase):
         self.ii.interpret_instruction(0xAFBB)
         self.assertEqual(self.ii.reg_i, 0xFBB)
 
+    @patch("random.randint", return_value=82)
+    def test_cxkk_random(self, mocked_randint):
+        self.ii.interpret_instruction(0xC318)
+        self.assertEqual(self.ii.reg_v[0x3], 16)
+
+        self.ii.interpret_instruction(0xC2EE)
+        self.assertEqual(self.ii.reg_v[0x2], 66)
+
+
     def test_fx07_set_delay_timer_to_vx(self):
         self.ii.reg_delay = 0x20
         self.ii.interpret_instruction(0xF107)
@@ -250,8 +259,6 @@ class TestInstructions(unittest.TestCase):
         self.assertEqual(self.ii.reg_v[0xC], 0x1C)
         self.assertEqual(self.ii.reg_v[0xD], 0x1D)
         self.assertEqual(self.ii.reg_v[0xE], 0x1E)
-
-
 
 
 if __name__ == '__main__':

@@ -223,7 +223,7 @@ class InstructionInterpreter:
         The interpreter generates a random number from 0 to 255, which is then
         ANDed with the value kk. The results are stored in Vx.
         """
-        x = (self.instruction & 0x0F00) >> 8
+        x = (instruction & 0x0F00) >> 8
         kk = instruction & 0x00FF
         self.reg_v[x] = random.randint(0, 255) & kk
 
