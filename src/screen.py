@@ -1,8 +1,10 @@
 # Copyright authors of kanzchip-8, licenced under MIT licence
 
-import pygame
 import sys
+
+import pygame
 from pygame.locals import *
+
 from src.log import logger
 
 
