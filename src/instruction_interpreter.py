@@ -247,6 +247,18 @@ class InstructionInterpreter:
 
             y_coord += 1
 
+    def interpret_group_F(self, instruction):
+        x = (instruction & 0x0F00) >> 8
+        if instruction & 0xFF == 0x15:
+            # Fx15 - LD DT, Vx
+            self.reg_delay = self.reg_v[x]
+        elif instruction & 0xFF == 0x18:
+            # Fx18 - LD ST, V
+            self.reg_sound = self.reg_v[x]
+        else:
+            logger.warning(f"OpCode {instruction:X} not yet supported ")
+
+
     def interpret_instruction(self, instruction):
         if instruction < 0x00:
             logger.error(f"Trying to pass a negative value {instruction:X} as instruction")
@@ -304,4 +316,4 @@ class InstructionInterpreter:
             logger.warning(f"OpCode {instruction:X} not yet supported ")
         elif instruction & 0xF000 == 0xF000:
             # A lot of different LD variants + ADD (I, Vx)
-            logger.warning(f"OpCode {instruction:X} not yet supported ")
+            self.interpret_group_F(instruction)

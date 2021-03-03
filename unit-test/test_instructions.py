@@ -192,6 +192,18 @@ class TestInstructions(unittest.TestCase):
         self.ii.interpret_instruction(0xAFBB)
         self.assertEqual(self.ii.reg_i, 0xFBB)
 
+    def test_fx15_set_delay_timer_to_vx(self):
+        self.assertEqual(self.ii.reg_delay, 0x0)
+        self.ii.reg_v[0x1] = 0x10
+        self.ii.interpret_instruction(0xF115)
+        self.assertEqual(self.ii.reg_delay, 0x10)
+
+    def test_fx18_set_sound_timer_to_vx(self):
+        self.assertEqual(self.ii.reg_sound, 0x0)
+        self.ii.reg_v[0x1] = 0x10
+        self.ii.interpret_instruction(0xF118)
+        self.assertEqual(self.ii.reg_sound, 0x10)
+
 
 if __name__ == '__main__':
     unittest.main()
