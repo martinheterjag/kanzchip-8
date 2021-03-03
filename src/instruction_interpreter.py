@@ -79,6 +79,32 @@ class InstructionInterpreter:
         """
         self.program_counter = instruction & 0x0FFF
 
+    def skip_if_equal(self, instruction):
+        """
+        3xkk - SE Vx, byte
+        Skip next instruction if Vx = kk.
+
+        The interpreter compares register Vx to kk, and if
+        they are equal, increments the program counter by 2.
+        """
+        x = (instruction & 0x0F00) >> 8
+        kk = instruction & 0x00FF
+        if self.reg_v[x] == kk:
+            self.incr_pc()
+
+    def skip_if_not_equal(self, instruction):
+        """
+        4xkk - SNE Vx, byte
+        Skip next instruction if Vx != kk.
+
+        The interpreter compares register Vx to kk, and if
+        they are not equal, increments the program counter by 2.
+        """
+        x = (instruction & 0x0F00) >> 8
+        kk = instruction & 0x00FF
+        if self.reg_v[x] != kk:
+            self.incr_pc()
+
     def set_vx_to_kk(self, instruction):
         """
         6xkk - LD Vx, byte
@@ -185,10 +211,10 @@ class InstructionInterpreter:
             logger.warning(f"OpCode {instruction:X} not yet supported ")
         elif instruction & 0xF000 == 0x3000:
             # SE
-            logger.warning(f"OpCode {instruction:X} not yet supported ")
+            self.skip_if_equal(instruction)
         elif instruction & 0xF000 == 0x4000:
             # SNE
-            logger.warning(f"OpCode {instruction:X} not yet supported ")
+            self.skip_if_not_equal(instruction)
         elif instruction & 0xF000 == 0x5000:
             # SE
             logger.warning(f"OpCode {instruction:X} not yet supported ")
