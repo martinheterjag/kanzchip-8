@@ -258,6 +258,26 @@ class InstructionInterpreter:
         elif instruction & 0xFF == 0x18:
             # Fx18 - LD ST, V
             self.reg_sound = self.reg_v[x]
+        elif instruction & 0xFF == 0x55:
+            '''
+            Fx55 - LD [I], Vx
+            Store registers V0 through Vx in memory starting at location I.
+
+            The interpreter copies the values of registers V0 through Vx into
+            memory, starting at the address in I.
+            '''
+            for i in range(0, x + 1):
+                self.memory[self.reg_i + i] = self.reg_v[i]
+        elif instruction & 0xFF == 0x65:
+            '''
+            Fx65 - LD Vx, [I]
+            Read registers V0 through Vx from memory starting at location I.
+
+            The interpreter reads values from memory starting at location I
+            into registers V0 through Vx.
+            '''
+            for i in range(0, x + 1):
+                self.reg_v[i] = self.memory[self.reg_i + i]
         else:
             logger.warning(f"OpCode {instruction:X} not yet supported ")
 
