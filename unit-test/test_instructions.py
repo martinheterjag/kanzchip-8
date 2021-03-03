@@ -13,8 +13,8 @@ class TestInstructions(unittest.TestCase):
         self.ii.interpret_instruction(0x00E0)
         self.screen.clear_all.assert_called_once()
 
-    # Test verifies that 0x00EE will set program_counter to address in stack the pointer is pointing to,
-    # and that the pointer is decremented.
+    # Test verifies that 0x00EE will set program_counter to address in stack the
+    # pointer is pointing to, and that the pointer is decremented.
     def test_00EE_ret(self):
         self.ii.stack = [400, 500]
         self.ii.stack_pointer = 1
@@ -32,6 +32,15 @@ class TestInstructions(unittest.TestCase):
             self.ii.interpret_instruction(instruction)
             jump = instruction & 0x0FFF
             self.assertEqual(self.ii.program_counter, jump)
+
+    def test_2nnn_call(self):
+        self.ii.stack_pointer = 0
+        self.ii.program_counter = 0x500
+
+        self.ii.interpret_instruction(0x2823)
+        self.assertEqual(self.ii.stack[1], 0x0500)
+        self.assertEqual(self.ii.stack_pointer, 1)
+        self.assertEqual(self.ii.program_counter, 0x0823)
 
     def test_6xkk_set_vx_to_kk(self):
         self.ii.interpret_instruction(0x62F3)
@@ -138,7 +147,7 @@ class TestInstructions(unittest.TestCase):
         self.ii.interpret_instruction(0x8E07)
         self.assertEqual(self.ii.reg_v[0xE], 0xFF)
         self.assertEqual(self.ii.reg_v[0xF], 0x00)
-    
+
     def test_annn_set_i_to_nnn(self):
         self.ii.interpret_instruction(0xA120)
         self.assertEqual(self.ii.reg_i, 0x120)

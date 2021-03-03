@@ -79,6 +79,19 @@ class InstructionInterpreter:
         """
         self.program_counter = instruction & 0x0FFF
 
+    def call(self, instruction):
+        """
+        2nnn - CALL addr
+        Call subroutine at nnn.
+
+        The interpreter increments the stack pointer,
+        then puts the current PC on the top of the stack.
+        The PC is then set to nnn.
+        """
+        self.stack_pointer += 1
+        self.stack[self.stack_pointer] = self.program_counter
+        self.program_counter = instruction & 0x0FFF
+
     def set_vx_to_kk(self, instruction):
         """
         6xkk - LD Vx, byte
@@ -171,7 +184,8 @@ class InstructionInterpreter:
             return
 
         if instruction > 0xFFFF:
-            logger.warning(f"Instruction {instruction:X} bigger than 8 bit, using {instruction % 0x10000:X}")
+            logger.warning(f"Instruction {instruction:X} bigger than 8 bit,"
+                           f" using {instruction % 0x10000:X}")
             instruction %= 0x10000
 
         if instruction & 0xF000 == 0x0000:
@@ -182,7 +196,7 @@ class InstructionInterpreter:
             self.jump(instruction)
         elif instruction & 0xF000 == 0x2000:
             # CALL
-            logger.warning(f"OpCode {instruction:X} not yet supported ")
+            self.call(instruction)
         elif instruction & 0xF000 == 0x3000:
             # SE
             logger.warning(f"OpCode {instruction:X} not yet supported ")
