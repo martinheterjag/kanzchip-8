@@ -29,6 +29,12 @@ class Screen:
                 sys.exit()
         pygame.display.update()
 
+    def get_pixel_state(self, x, y):
+        x = x * self.PIXEL_SIZE
+        y = y * self.PIXEL_SIZE
+        pixel = self.DISPLAY.get_at((x, y))
+        return pixel == self.WHITE
+
     def set_pixel(self, x, y):
         x = x * self.PIXEL_SIZE
         y = y * self.PIXEL_SIZE

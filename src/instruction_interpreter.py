@@ -204,6 +204,13 @@ class InstructionInterpreter:
         nnn = instruction & 0x0FFF
         self.reg_i = nnn
 
+    def draw(self, instruction):
+        """
+        Dxyn - DRW Vx, Vy, nibble
+        Display n-byte sprite starting at memory location I at (Vx, Vy), set VF = collision.
+        """
+        pass
+
     def interpret_instruction(self, instruction):
         if instruction < 0x00:
             logger.error(f"Trying to pass a negative value {instruction:X} as instruction")
@@ -255,7 +262,7 @@ class InstructionInterpreter:
             logger.warning(f"OpCode {instruction:X} not yet supported ")
         elif instruction & 0xF000 == 0xD000:
             # DRW
-            logger.warning(f"OpCode {instruction:X} not yet supported ")
+            self.draw(instruction)
         elif instruction & 0xF000 == 0xE000:
             # SKP, SKNP
             logger.warning(f"OpCode {instruction:X} not yet supported ")
