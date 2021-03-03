@@ -1,5 +1,6 @@
 import unittest
 from unittest.mock import Mock
+
 from src.instruction_interpreter import InstructionInterpreter
 
 
@@ -7,6 +8,14 @@ class TestInstructions(unittest.TestCase):
     def setUp(self):
         self.screen = Mock()
         self.ii = InstructionInterpreter(self.screen)
+
+    def test_next_instruction(self):
+        self.ii.memory[0x200] = 0x00
+        self.ii.memory[0x201] = 0xE0
+        self.ii.program_counter = 0x200
+
+        self.assertEqual(self.ii.next_instruction(), 0x00E0)
+        self.assertEqual(self.ii.program_counter, 0x202)
 
     # Test is supposed to verify that 0x00E0 will clear the screen
     def test_00E0_clear_screen(self):
@@ -32,7 +41,7 @@ class TestInstructions(unittest.TestCase):
             self.ii.interpret_instruction(instruction)
             jump = instruction & 0x0FFF
             self.assertEqual(self.ii.program_counter, jump)
-            
+
     def test_2nnn_call(self):
         self.ii.stack_pointer = 0
         self.ii.program_counter = 0x500
@@ -164,14 +173,6 @@ class TestInstructions(unittest.TestCase):
         self.assertEqual(self.ii.reg_v[0xE], 0xFF)
         self.assertEqual(self.ii.reg_v[0xF], 0x00)
 
-    def test_annn_set_i_to_nnn(self):
-        self.ii.interpret_instruction(0xA120)
-        self.assertEqual(self.ii.reg_i, 0x120)
-
-        self.ii.interpret_instruction(0xAFBB)
-        self.assertEqual(self.ii.reg_i, 0xFBB)
-
-
     def test_8xyE_shl_vx_vy_no_carry(self):
         self.ii.reg_v[0x0] = 0b01000000
         self.ii.interpret_instruction(0x800E)
@@ -183,6 +184,13 @@ class TestInstructions(unittest.TestCase):
         self.ii.interpret_instruction(0x800E)
         self.assertEqual(self.ii.reg_v[0x0], 0b10000010)
         self.assertEqual(self.ii.reg_v[0xF], 0x01)
+
+    def test_annn_set_i_to_nnn(self):
+        self.ii.interpret_instruction(0xA120)
+        self.assertEqual(self.ii.reg_i, 0x120)
+
+        self.ii.interpret_instruction(0xAFBB)
+        self.assertEqual(self.ii.reg_i, 0xFBB)
 
 
 if __name__ == '__main__':

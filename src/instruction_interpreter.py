@@ -18,8 +18,10 @@ FONTS = (
     0xF0, 0x80, 0x80, 0x80, 0xF0,  # C
     0xE0, 0x90, 0x90, 0x90, 0xE0,  # D
     0xF0, 0x80, 0xF0, 0x80, 0xF0,  # E
-    0xF0, 0x80, 0xF0, 0x80, 0x80   # F
+    0xF0, 0x80, 0xF0, 0x80, 0x80  # F
 )
+
+PROGRAM_START = 0x200
 
 
 class InstructionInterpreter:
@@ -47,11 +49,18 @@ class InstructionInterpreter:
         self.screen = screen
         logger.info("InstructionInterpreter initialized")
 
+    def next_instruction(self):
+        instruction = self.memory[self.program_counter] << 8
+        instruction += self.memory[self.program_counter + 1]
+        self.incr_pc()
+        return instruction
+
     def load_rom(self, filename):
         rom = open(filename, 'rb').read()
         for i, val in enumerate(rom):
             self.memory[0x200 + i] = val
-        self.program_counter = 0x200
+        self.program_counter = PROGRAM_START
+        logger.info(f"Loaded {filename} into memory")
 
     def incr_pc(self):
         self.program_counter += 2
@@ -78,7 +87,7 @@ class InstructionInterpreter:
         The interpreter sets the program counter to nnn.
         """
         self.program_counter = instruction & 0x0FFF
-        
+
     def call(self, instruction):
         """
         2nnn - CALL addr
@@ -204,6 +213,40 @@ class InstructionInterpreter:
         nnn = instruction & 0x0FFF
         self.reg_i = nnn
 
+    def draw(self, instruction):
+        """
+        Dxyn - DRW Vx, Vy, nibble
+        Display n-byte sprite starting at memory location I at (Vx, Vy), set VF = collision.
+        """
+        x = (instruction & 0x0F00) >> 8
+        y = (instruction & 0x00F0) >> 4
+        n = instruction & 0x000F
+
+        x_coord = self.reg_v[x] % 64
+        y_coord = self.reg_v[y] % 32
+
+        self.reg_v[0xF] = 0
+
+        for row in range(n):
+            if y_coord > 31:
+                break
+
+            sprite = self.memory[self.reg_i + row]
+            bits = format(sprite, "08b")
+            # bits = bin(sprite)[2:].zfill(8)
+            for i, bit in enumerate(bits):
+                if x_coord + i > 63:
+                    break
+
+                pixel = self.screen.get_pixel_state(x_coord + i, y_coord)
+                if bit == '1' and pixel:
+                    self.screen.clear_pixel(x_coord + i, y_coord)
+                    self.reg_v[0xF] = 1
+                elif bit == '1' and pixel is False:
+                    self.screen.set_pixel(x_coord + i, y_coord)
+
+            y_coord += 1
+
     def interpret_instruction(self, instruction):
         if instruction < 0x00:
             logger.error(f"Trying to pass a negative value {instruction:X} as instruction")
@@ -255,7 +298,7 @@ class InstructionInterpreter:
             logger.warning(f"OpCode {instruction:X} not yet supported ")
         elif instruction & 0xF000 == 0xD000:
             # DRW
-            logger.warning(f"OpCode {instruction:X} not yet supported ")
+            self.draw(instruction)
         elif instruction & 0xF000 == 0xE000:
             # SKP, SKNP
             logger.warning(f"OpCode {instruction:X} not yet supported ")

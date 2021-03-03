@@ -1,8 +1,10 @@
 # Copyright authors of kanzchip-8, licenced under MIT licence
 
-import pygame
 import sys
+
+import pygame
 from pygame.locals import *
+
 from src.log import logger
 
 
@@ -28,6 +30,12 @@ class Screen:
                 pygame.quit()
                 sys.exit()
         pygame.display.update()
+
+    def get_pixel_state(self, x, y):
+        x = x * self.PIXEL_SIZE
+        y = y * self.PIXEL_SIZE
+        pixel = self.DISPLAY.get_at((x, y))
+        return pixel == self.WHITE
 
     def set_pixel(self, x, y):
         x = x * self.PIXEL_SIZE
