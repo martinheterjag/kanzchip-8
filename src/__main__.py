@@ -5,6 +5,7 @@ import pygame
 from src.instruction_interpreter import InstructionInterpreter
 from src.log import logger
 from src.screen import Screen
+from src.sound import Sound
 
 VERSION = "0.0.1"
 ROM = "roms/IBM Logo.ch8"  # temporary
@@ -13,6 +14,7 @@ ROM = "roms/IBM Logo.ch8"  # temporary
 def main():
     logger.info(f"--- kanzchip-8, chip-8 emulator version {VERSION} ---")
     screen = Screen()
+    sound = Sound()
     clock = pygame.time.Clock()
 
     ii = InstructionInterpreter(screen)
@@ -23,6 +25,15 @@ def main():
     while True:
         screen.spin()
         clock.tick(60)  # run at 60 fps
+
+        # Timer and sound registers shall decrement if not 0 at a rate of 60 Hz
+        if ii.reg_delay > 0:
+            ii.reg_delay -= 1
+        if ii.reg_sound > 0:
+            sound.buzzer_on()
+            ii.reg_sound -= 1
+            if ii.reg_sound == 0:
+                sound.buzzer_off()
 
         # Run 10 instructions per frame to simulate 600hz
         # Most CHIP-8 interpreters ran at about 500-1000hz,
