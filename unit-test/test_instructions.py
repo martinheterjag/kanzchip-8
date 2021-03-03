@@ -32,7 +32,7 @@ class TestInstructions(unittest.TestCase):
             self.ii.interpret_instruction(instruction)
             jump = instruction & 0x0FFF
             self.assertEqual(self.ii.program_counter, jump)
-
+            
     def test_2nnn_call(self):
         self.ii.stack_pointer = 0
         self.ii.program_counter = 0x500
@@ -41,6 +41,22 @@ class TestInstructions(unittest.TestCase):
         self.assertEqual(self.ii.stack[1], 0x0500)
         self.assertEqual(self.ii.stack_pointer, 1)
         self.assertEqual(self.ii.program_counter, 0x0823)
+
+    def test_3xkk_x_equal_to_kk(self):
+        self.ii.program_counter = 100
+        self.ii.reg_v[0x1] = 0xBE
+        self.ii.interpret_instruction(0x31BA)
+        self.assertEqual(self.ii.program_counter, 100)
+        self.ii.interpret_instruction(0x31BE)
+        self.assertEqual(self.ii.program_counter, 102)
+
+    def test_4xkk_x_not_equal_to_kk(self):
+        self.ii.program_counter = 100
+        self.ii.reg_v[0x1] = 0xBE
+        self.ii.interpret_instruction(0x41BA)
+        self.assertEqual(self.ii.program_counter, 102)
+        self.ii.interpret_instruction(0x41BE)
+        self.assertEqual(self.ii.program_counter, 102)
 
     def test_6xkk_set_vx_to_kk(self):
         self.ii.interpret_instruction(0x62F3)
