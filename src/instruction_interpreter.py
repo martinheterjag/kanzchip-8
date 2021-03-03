@@ -249,7 +249,10 @@ class InstructionInterpreter:
 
     def interpret_group_F(self, instruction):
         x = (instruction & 0x0F00) >> 8
-        if instruction & 0xFF == 0x15:
+        if instruction & 0xFF == 0x07:
+            # Fx15 - LD Vx, DT
+            self.reg_v[x] = self.reg_delay
+        elif instruction & 0xFF == 0x15:
             # Fx15 - LD DT, Vx
             self.reg_delay = self.reg_v[x]
         elif instruction & 0xFF == 0x18:
