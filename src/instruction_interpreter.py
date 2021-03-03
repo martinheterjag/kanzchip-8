@@ -1,5 +1,7 @@
 # Copyright authors of kanzchip-8, licenced under MIT licence
 
+import random
+
 from src.log import logger
 
 FONTS = (
@@ -213,6 +215,18 @@ class InstructionInterpreter:
         nnn = instruction & 0x0FFF
         self.reg_i = nnn
 
+    def random(self, instruction):
+        """
+        Cxkk - RND Vx, byte
+        Set Vx = random byte AND kk.
+
+        The interpreter generates a random number from 0 to 255, which is then
+        ANDed with the value kk. The results are stored in Vx.
+        """
+        x = (instruction & 0x0F00) >> 8
+        kk = instruction & 0x00FF
+        self.reg_v[x] = random.randint(0, 255) & kk
+
     def draw(self, instruction):
         """
         Dxyn - DRW Vx, Vy, nibble
@@ -281,7 +295,6 @@ class InstructionInterpreter:
         else:
             logger.warning(f"OpCode {instruction:X} not yet supported ")
 
-
     def interpret_instruction(self, instruction):
         if instruction < 0x00:
             logger.error(f"Trying to pass a negative value {instruction:X} as instruction")
@@ -330,7 +343,7 @@ class InstructionInterpreter:
             logger.warning(f"OpCode {instruction:X} not yet supported ")
         elif instruction & 0xF000 == 0xC000:
             # RND
-            logger.warning(f"OpCode {instruction:X} not yet supported ")
+            self.random(instruction)
         elif instruction & 0xF000 == 0xD000:
             # DRW
             self.draw(instruction)
