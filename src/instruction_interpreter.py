@@ -299,6 +299,9 @@ class InstructionInterpreter:
         elif instruction & 0xFF == 0x18:
             # Fx18 - LD ST, V
             self.reg_sound = self.reg_v[x]
+        elif instruction & 0xFF == 0x1E:
+            # Fx1E ADD I, Vx
+            self.reg_i = (self.reg_i + self.reg_v[x]) & 0xFFFF
         elif instruction & 0xFF == 0x33:
             '''
             Fx33 - LD B, Vx
