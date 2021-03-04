@@ -27,7 +27,7 @@ PROGRAM_START = 0x200
 
 
 class InstructionInterpreter:
-    def __init__(self, screen):
+    def __init__(self, screen, keyboard):
         # Allocate memory for all registers
         self.reg_v = [0] * 16     # Vx where x is 0-15, 8.bit registers
         self.reg_i = 0            # 16-bit register
@@ -49,6 +49,7 @@ class InstructionInterpreter:
         self.CHIP_48 = False
 
         self.screen = screen
+        self.keyboard = keyboard
         logger.info("InstructionInterpreter initialized")
 
     def next_instruction(self):
@@ -298,10 +299,23 @@ class InstructionInterpreter:
 
             y_coord += 1
 
+    def interpret_group_E(self, instruction):
+        x = (instruction & 0x0F00) >> 8
+        if instruction & 0x00FF == 0x9E:
+            # Ex9E - SKP Vx
+            if self.keyboard.is_pressed(self.reg_v[x]) == True:
+                self.incr_pc()
+        elif instruction & 0x00FF == 0xA1:
+            # ExA1 - SKNP Vx
+            if self.keyboard.is_pressed(self.reg_v[x]) == False:
+                self.incr_pc()
+        else:
+            logger.warning(f"OpCode {instruction:X} is not supported ")
+
     def interpret_group_F(self, instruction):
         x = (instruction & 0x0F00) >> 8
         if instruction & 0xFF == 0x07:
-            # Fx15 - LD Vx, DT
+            # Fx07 - LD Vx, DT
             self.reg_v[x] = self.reg_delay
         elif instruction & 0xFF == 0x15:
             # Fx15 - LD DT, Vx
@@ -413,7 +427,7 @@ class InstructionInterpreter:
             self.draw(instruction)
         elif instruction & 0xF000 == 0xE000:
             # SKP, SKNP
-            logger.warning(f"OpCode {instruction:X} not yet supported ")
+            self.interpret_group_E(instruction)
         elif instruction & 0xF000 == 0xF000:
             # A lot of different LD variants + ADD (I, Vx)
             self.interpret_group_F(instruction)

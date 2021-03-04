@@ -9,6 +9,7 @@ from src.instruction_interpreter import InstructionInterpreter
 from src.log import logger
 from src.screen import Screen
 from src.sound import Sound
+from src.hex_keyboard import HexKeyboard
 
 VERSION = "0.0.1"
 
@@ -32,10 +33,11 @@ def main():
 
     logger.info(f"Loaded ROM-file {rom}")
     screen = Screen()
+    keyboard = HexKeyboard()
     sound = Sound()
     clock = pygame.time.Clock()
 
-    ii = InstructionInterpreter(screen)
+    ii = InstructionInterpreter(screen, keyboard)
     ii.load_rom(rom)
 
     pygame.display.set_caption(rom.split("/")[-1].removesuffix(".ch8"))
