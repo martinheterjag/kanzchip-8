@@ -1,5 +1,8 @@
 # Copyright authors of kanzchip-8, licenced under MIT licence
 
+import tkinter as tk
+from tkinter import filedialog
+
 import pygame
 
 from src.instruction_interpreter import InstructionInterpreter
@@ -8,19 +11,34 @@ from src.screen import Screen
 from src.sound import Sound
 
 VERSION = "0.0.1"
-ROM = "roms/IBM Logo.ch8"  # temporary
+
+
+# TODO: should probably be done form a menu instead of startup
+def open_rom_file():
+    root = tk.Tk()
+    root.withdraw()
+    return filedialog.askopenfilename(initialdir="roms",
+                                      filetypes=(("ROM", "*.ch8"),
+                                                 ("All files", "*"),))
 
 
 def main():
     logger.info(f"--- kanzchip-8, chip-8 emulator version {VERSION} ---")
+    rom = open_rom_file()
+    if rom == "":
+        logger.info("No rom selected!")
+        logger.info("Exiting")
+        return
+
+    logger.info(f"Loaded ROM-file {rom}")
     screen = Screen()
     sound = Sound()
     clock = pygame.time.Clock()
 
     ii = InstructionInterpreter(screen)
-    ii.load_rom(ROM)
+    ii.load_rom(rom)
 
-    pygame.display.set_caption(ROM.split("/")[-1].removesuffix(".ch8"))
+    pygame.display.set_caption(rom.split("/")[-1].removesuffix(".ch8"))
 
     while True:
         screen.spin()
