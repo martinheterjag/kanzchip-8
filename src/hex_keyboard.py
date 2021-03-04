@@ -1,6 +1,6 @@
 # Copyright authors of kanzchip-8, licenced under MIT licence
 
-'''
+"""
 The keyboard is mapped to fit the pattern of a querty keyboard
 
 Mapping table:
@@ -10,9 +10,11 @@ Original Keyboard | Querty Keyboard
 4  5  6  D        | Q  W  E  R
 7  8  9  E        | A  S  D  F
 A  0  B  F        | Z  X  C  V
-'''
+"""
 import pygame
+
 from src.log import logger
+
 
 class HexKeyboard:
     def __init__(self):

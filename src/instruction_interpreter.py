@@ -303,11 +303,11 @@ class InstructionInterpreter:
         x = (instruction & 0x0F00) >> 8
         if instruction & 0x00FF == 0x9E:
             # Ex9E - SKP Vx
-            if self.keyboard.is_pressed(self.reg_v[x]) == True:
+            if self.keyboard.is_pressed(self.reg_v[x]):
                 self.incr_pc()
         elif instruction & 0x00FF == 0xA1:
             # ExA1 - SKNP Vx
-            if self.keyboard.is_pressed(self.reg_v[x]) == False:
+            if not self.keyboard.is_pressed(self.reg_v[x]):
                 self.incr_pc()
         else:
             logger.warning(f"OpCode {instruction:X} is not supported ")
