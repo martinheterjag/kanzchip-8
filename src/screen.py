@@ -11,7 +11,6 @@ from src.log import logger
 class Screen:
     def __init__(self, flags=0):
         pygame.init()
-        print("pygame.HIDDEN", pygame.HIDDEN)
         self.PIXEL_SIZE = 20
         self.WIDTH = 64 * self.PIXEL_SIZE
         self.HEIGHT = 32 * self.PIXEL_SIZE
