@@ -312,6 +312,16 @@ class InstructionInterpreter:
         elif instruction & 0xFF == 0x1E:
             # Fx1E ADD I, Vx
             self.reg_i = (self.reg_i + self.reg_v[x]) & 0xFFFF
+        elif instruction & 0xFF == 0x29:
+            '''
+            Fx29 - LD F, Vx
+            Set I = location of sprite for digit Vx.
+
+            The value of I is set to the location for the hexadecimal sprite
+            corresponding to the value of Vx.
+            '''
+            # Digits are stored in memory 0, 5, 10 ...
+            self.reg_i = self.reg_v[x] * 5
         elif instruction & 0xFF == 0x33:
             '''
             Fx33 - LD B, Vx

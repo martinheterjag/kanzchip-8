@@ -248,6 +248,11 @@ class TestInstructions(unittest.TestCase):
         self.ii.interpret_instruction(0xF118)
         self.assertEqual(self.ii.reg_sound, 0x10)
 
+    def test_fx29_set_i_to_vx_times_5(self):
+        self.ii.reg_v[0x0] = 2
+        self.ii.interpret_instruction(0xF029)
+        self.assertEqual(self.ii.reg_i, 10)
+
     def test_fx1e_add_vx_to_index(self):
         self.ii.reg_v[0x2] = 20
         self.ii.reg_i = 10
