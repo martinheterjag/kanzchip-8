@@ -67,6 +67,17 @@ class TestInstructions(unittest.TestCase):
         self.ii.interpret_instruction(0x41BE)
         self.assertEqual(self.ii.program_counter, 102)
 
+    def test_5xy0_skip_if_vx_equal_vy(self):
+        self.ii.program_counter = 0x200
+        self.ii.reg_v[0x1] = 0xBE
+        self.ii.reg_v[0x2] = 0xBB
+        self.ii.interpret_instruction(0x5120)
+        self.assertEqual(self.ii.program_counter, 0x200)
+
+        self.ii.reg_v[0x1] = 0xBB
+        self.ii.interpret_instruction(0x5120)
+        self.assertEqual(self.ii.program_counter, 0x202)
+
     def test_6xkk_set_vx_to_kk(self):
         self.ii.interpret_instruction(0x62F3)
         self.assertEqual(self.ii.reg_v[0x2], 0xF3)
@@ -185,6 +196,17 @@ class TestInstructions(unittest.TestCase):
         self.assertEqual(self.ii.reg_v[0x0], 0b10000010)
         self.assertEqual(self.ii.reg_v[0xF], 0x01)
 
+    def test_9xy0_skip_if_vx_not_equal_vy(self):
+        self.ii.program_counter = 0x200
+        self.ii.reg_v[0x1] = 0xBE
+        self.ii.reg_v[0x2] = 0xBE
+        self.ii.interpret_instruction(0x9120)
+        self.assertEqual(self.ii.program_counter, 0x200)
+
+        self.ii.reg_v[0x1] = 0xBB
+        self.ii.interpret_instruction(0x9120)
+        self.assertEqual(self.ii.program_counter, 0x202)
+
     def test_annn_set_i_to_nnn(self):
         self.ii.interpret_instruction(0xA120)
         self.assertEqual(self.ii.reg_i, 0x120)
@@ -220,6 +242,12 @@ class TestInstructions(unittest.TestCase):
         self.ii.reg_v[0x1] = 0x10
         self.ii.interpret_instruction(0xF118)
         self.assertEqual(self.ii.reg_sound, 0x10)
+
+    def test_fx1e_add_vx_to_index(self):
+        self.ii.reg_v[0x2] = 20
+        self.ii.reg_i = 10
+        self.ii.interpret_instruction(0xF21E)
+        self.assertEqual(self.ii.reg_i, 30)
 
     def test_fx33_save_reg_vx_bcd_representation_to_memory(self):
         self.ii.reg_i = 0x500

@@ -129,6 +129,19 @@ class InstructionInterpreter:
         if self.reg_v[x] != kk:
             self.incr_pc()
 
+    def skip_if_vx_equal_vy(self, instruction):
+        """
+        5xy0 - SE Vx, Vy
+        Skip next instruction if Vx = Vy.
+
+        The interpreter compares register Vx to register Vy, and
+        if they are equal, increments the program counter by 2.
+        """
+        x = (instruction & 0x0F00) >> 8
+        y = (instruction & 0x00F0) >> 4
+        if self.reg_v[x] == self.reg_v[y]:
+            self.incr_pc()
+
     def set_vx_to_kk(self, instruction):
         """
         6xkk - LD Vx, byte
@@ -205,6 +218,19 @@ class InstructionInterpreter:
         else:
             logger.warning(f"OpCode {instruction:X} supported ")
 
+    def skip_if_vx_not_equal_vy(self, instruction):
+        """
+        9xy0 - SNE Vx, Vy
+        Skip next instruction if Vx != Vy.
+
+        The values of Vx and Vy are compared, and if they are
+        not equal, the program counter is increased by 2.
+        """
+        x = (instruction & 0x0F00) >> 8
+        y = (instruction & 0x00F0) >> 4
+        if self.reg_v[x] != self.reg_v[y]:
+            self.incr_pc()
+
     def set_index_to_nnn(self, instruction):
         """
         Annn - LD I, addr
@@ -230,7 +256,8 @@ class InstructionInterpreter:
     def draw(self, instruction):
         """
         Dxyn - DRW Vx, Vy, nibble
-        Display n-byte sprite starting at memory location I at (Vx, Vy), set VF = collision.
+        Display n-byte sprite starting at memory location I
+        at (Vx, Vy), set VF = collision.
         """
         x = (instruction & 0x0F00) >> 8
         y = (instruction & 0x00F0) >> 4
@@ -272,6 +299,9 @@ class InstructionInterpreter:
         elif instruction & 0xFF == 0x18:
             # Fx18 - LD ST, V
             self.reg_sound = self.reg_v[x]
+        elif instruction & 0xFF == 0x1E:
+            # Fx1E ADD I, Vx
+            self.reg_i = (self.reg_i + self.reg_v[x]) & 0xFFFF
         elif instruction & 0xFF == 0x33:
             '''
             Fx33 - LD B, Vx
@@ -336,7 +366,7 @@ class InstructionInterpreter:
             self.skip_if_not_equal(instruction)
         elif instruction & 0xF000 == 0x5000:
             # SE
-            logger.warning(f"OpCode {instruction:X} not yet supported ")
+            self.skip_if_vx_equal_vy(instruction)
         elif instruction & 0xF000 == 0x6000:
             # LD (Vx, Byte)
             self.set_vx_to_kk(instruction)
@@ -348,7 +378,7 @@ class InstructionInterpreter:
             self.interpret_group_8(instruction)
         elif instruction & 0xF000 == 0x9000:
             # SNE
-            logger.warning(f"OpCode {instruction:X} not yet supported ")
+            self.skip_if_vx_not_equal_vy(instruction)
         elif instruction & 0xF000 == 0xA000:
             # LD (Vx, Vy)
             self.set_index_to_nnn(instruction)
