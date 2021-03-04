@@ -241,6 +241,16 @@ class InstructionInterpreter:
         nnn = instruction & 0x0FFF
         self.reg_i = nnn
 
+    def jump_with_offset(self, instruction):
+        """
+        Bnnn - JP V0, addr
+        Jump to location nnn + V0.
+
+        The program counter is set to nnn plus the value of V0.
+        """
+        nnn = instruction & 0x0FFF
+        self.program_counter = nnn + self.reg_v[0x0]
+
     def random(self, instruction):
         """
         Cxkk - RND Vx, byte
@@ -384,7 +394,7 @@ class InstructionInterpreter:
             self.set_index_to_nnn(instruction)
         elif instruction & 0xF000 == 0xB000:
             # JP V0
-            logger.warning(f"OpCode {instruction:X} not yet supported ")
+            self.jump_with_offset(instruction)
         elif instruction & 0xF000 == 0xC000:
             # RND
             self.random(instruction)
