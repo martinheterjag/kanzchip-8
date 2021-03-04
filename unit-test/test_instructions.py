@@ -214,6 +214,11 @@ class TestInstructions(unittest.TestCase):
         self.ii.interpret_instruction(0xAFBB)
         self.assertEqual(self.ii.reg_i, 0xFBB)
 
+    def test_bnnn_jump_with_offset(self):
+        self.ii.reg_v[0x0] = 0x50
+        self.ii.interpret_instruction(0xB750)
+        self.assertEqual(self.ii.program_counter, 0x7a0)
+
     @patch("random.randint", return_value=82)
     def test_cxkk_random(self, mocked_randint):
         self.ii.interpret_instruction(0xC318)
