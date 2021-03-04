@@ -37,7 +37,7 @@ def main():
     sound = Sound()
     clock = pygame.time.Clock()
 
-    ii = InstructionInterpreter(screen)
+    ii = InstructionInterpreter(screen, keyboard)
     ii.load_rom(rom)
 
     pygame.display.set_caption(rom.split("/")[-1].removesuffix(".ch8"))

@@ -7,7 +7,8 @@ from src.instruction_interpreter import InstructionInterpreter
 class TestInstructions(unittest.TestCase):
     def setUp(self):
         self.screen = Mock()
-        self.ii = InstructionInterpreter(self.screen)
+        self.keyboard = Mock()
+        self.ii = InstructionInterpreter(self.screen, self.keyboard)
 
     def test_next_instruction(self):
         self.ii.memory[0x200] = 0x00
@@ -225,6 +226,34 @@ class TestInstructions(unittest.TestCase):
         mocked_randint.return_value = 221
         self.ii.interpret_instruction(0xC22F)
         self.assertEqual(self.ii.reg_v[0x2], 13)
+
+    def test_ex9e_skip_if_key_pressed(self):
+        self.ii.program_counter = 0x200
+        is_pressed = Mock(return_value=True)
+        self.keyboard.is_pressed = is_pressed
+        self.ii.interpret_instruction(0xE19E)
+        self.assertEqual(self.ii.program_counter, 0x202)
+
+    def test_ex9e_skip_if_key_pressed_negative(self):
+        self.ii.program_counter = 0x200
+        is_pressed = Mock(return_value=False)  # Will not skip since false
+        self.keyboard.is_pressed = is_pressed
+        self.ii.interpret_instruction(0xE29E)
+        self.assertEqual(self.ii.program_counter, 0x200)
+
+    def test_exa1_skip_if_key_not_pressed(self):
+        self.ii.program_counter = 0x200
+        is_pressed = Mock(return_value=False)
+        self.keyboard.is_pressed = is_pressed
+        self.ii.interpret_instruction(0xE3A1)
+        self.assertEqual(self.ii.program_counter, 0x202)
+
+    def test_exa1_skip_if_key_not_pressed_negative(self):
+        self.ii.program_counter = 0x200
+        is_pressed = Mock(return_value=True)  # Will not skip since true
+        self.keyboard.is_pressed = is_pressed
+        self.ii.interpret_instruction(0xE4A1)
+        self.assertEqual(self.ii.program_counter, 0x200)
 
     def test_fx07_set_delay_timer_to_vx(self):
         self.ii.reg_delay = 0x20
