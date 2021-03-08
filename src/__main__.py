@@ -39,11 +39,9 @@ def main():
 
     ii = InstructionInterpreter(screen, keyboard)
     ii.load_rom(rom)
-
-    pygame.display.set_caption(rom.split("/")[-1].removesuffix(".ch8"))
+    title = rom.split("/")[-1].removesuffix(".ch8")
 
     while True:
-        screen.spin()
         clock.tick(60)  # run at 60 fps
 
         # Timer and sound registers shall decrement if not 0 at a rate of 60 Hz
@@ -61,6 +59,10 @@ def main():
         for tick in range(10):
             instruction = ii.next_instruction()
             ii.interpret_instruction(instruction)
+
+        fps = format(clock.get_fps(), ".1f")
+        pygame.display.set_caption(f"{title}     FPS: {fps}")
+        screen.spin()
 
 
 if __name__ == "__main__":
