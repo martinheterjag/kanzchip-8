@@ -44,6 +44,11 @@ def main():
     while True:
         clock.tick(60)  # run at 60 fps
 
+        if screen.paused:
+            pygame.display.set_caption(f"{title}     PAUSED")
+            screen.spin()
+            continue
+
         # Timer and sound registers shall decrement if not 0 at a rate of 60 Hz
         if ii.reg_delay > 0:
             ii.reg_delay -= 1

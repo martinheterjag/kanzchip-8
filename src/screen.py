@@ -19,6 +19,8 @@ class Screen:
         self.WHITE = (230, 230, 230)
         self.BLACK = (20, 20, 20)
 
+        self.paused = False
+
         self.clear_all()
         logger.info("Screen initialized")
 
@@ -28,6 +30,9 @@ class Screen:
             if event.type == QUIT:
                 pygame.quit()
                 sys.exit()
+            elif event.type == KEYDOWN and event.key == pygame.K_ESCAPE:
+                self.paused = not self.paused
+
         pygame.display.update()
 
     def get_pixel_state(self, x, y):
