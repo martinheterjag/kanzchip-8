@@ -18,6 +18,7 @@ VERSION = "0.0.1"
 def main():
     logger.info(f"--- kanzchip-8, chip-8 emulator version {VERSION} ---")
     title = ""
+    ticks_per_frame = 10
 
     def reset_rom():
         screen.clear_all()
@@ -39,8 +40,11 @@ def main():
         logger.info(f"Loaded ROM-file {rom}")
         reset_rom()
 
-    def set_cpu_rate(value, difficulty):
-        print("Setting not implemented")
+    def set_cpu_rate(selected_value, hz):
+        nonlocal ticks_per_frame
+        ticks_per_frame = hz//60
+        logger.info(f"selected: {selected_value}, hz: {hz},"
+                    f"ticks_per_frame: {ticks_per_frame}")
 
     screen = Screen()
     keyboard = HexKeyboard()
@@ -60,14 +64,15 @@ def main():
                             joystick_enabled=False,
                             keyboard_enabled=False,
                             position=(0, 0),
-                            columns=5,
+                            columns=3,
+                            column_min_width=(250, 250, 250),
                             rows=1,
                             mouse_motion_selection=True
                             )
-
-    menu.add_button('Reset ROM', reset_rom)
-    menu.add_button('Load ROM', open_rom_file)
+    menu.add.button('Reset ROM', reset_rom)
+    menu.add.button('Load ROM', open_rom_file)
     menu.add.selector('CPU :', [('600Hz', 600),
+                                ('900hz', 900),
                                 ('1200Hz', 1200),
                                 ('6000Hz', 6000)], onchange=set_cpu_rate)
 
@@ -94,7 +99,7 @@ def main():
         # Run 10 instructions per frame to simulate 600hz
         # Most CHIP-8 interpreters ran at about 500-1000hz,
         # Could make this configurable
-        for tick in range(10):
+        for tick in range(ticks_per_frame):
             instruction = ii.next_instruction()
             ii.interpret_instruction(instruction)
 
