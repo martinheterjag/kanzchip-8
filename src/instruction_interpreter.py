@@ -52,6 +52,16 @@ class InstructionInterpreter:
         self.keyboard = keyboard
         logger.info("InstructionInterpreter initialized")
 
+    def reset(self):
+        # Reset all registers
+        self.reg_v = [0] * 16
+        self.reg_i = 0
+        self.reg_delay = 0
+        self.reg_sound = 0
+        self.program_counter = PROGRAM_START
+        self.stack = [0] * 16
+        self.stack_pointer = 0
+
     def next_instruction(self):
         instruction = self.memory[self.program_counter] << 8
         instruction += self.memory[self.program_counter + 1]
