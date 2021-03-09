@@ -65,7 +65,7 @@ def main():
                             keyboard_enabled=False,
                             position=(0, 0),
                             columns=3,
-                            column_min_width=(250, 250, 250),
+                            column_min_width=(210, 400, 200),
                             rows=1,
                             mouse_motion_selection=True
                             )
@@ -74,7 +74,8 @@ def main():
     menu.add.selector('CPU :', [('600Hz', 600),
                                 ('900hz', 900),
                                 ('1200Hz', 1200),
-                                ('6000Hz', 6000)], onchange=set_cpu_rate)
+                                ('6000Hz', 6000)],
+                      onchange=set_cpu_rate, align=pygame_menu.locals.ALIGN_LEFT)
 
     logger.info(f"Running main loop")
     clock = pygame.time.Clock()
