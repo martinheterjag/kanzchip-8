@@ -4,6 +4,7 @@ import tkinter as tk
 from tkinter import filedialog
 
 import pygame
+import pygame_menu
 
 from src.instruction_interpreter import InstructionInterpreter
 from src.log import logger
@@ -14,34 +15,65 @@ from src.hex_keyboard import HexKeyboard
 VERSION = "0.0.1"
 
 
-# TODO: should probably be done form a menu instead of startup
-def open_rom_file():
-    root = tk.Tk()
-    root.withdraw()
-    return filedialog.askopenfilename(initialdir="roms",
-                                      filetypes=(("ROM", "*.ch8"),
-                                                 ("All files", "*"),))
-
-
 def main():
     logger.info(f"--- kanzchip-8, chip-8 emulator version {VERSION} ---")
-    rom = open_rom_file()
-    if rom == "":
-        logger.info("No rom selected!")
-        logger.info("Exiting")
-        return
+    title = ""
+    def reset_rom(instruction_interpreter, screen):
+        screen.clear_all()
+        instruction_interpreter.reset()
 
-    logger.info(f"Loaded ROM-file {rom}")
+    def open_rom_file(instruction_interpreter, screen):
+        root = tk.Tk()
+        root.withdraw()
+        rom = filedialog.askopenfilename(initialdir="roms",
+                                         filetypes=(("ROM", "*.ch8"),
+                                                    ("All files", "*"),))
+        if rom == "":
+            logger.info("No rom selected!")
+            logger.info("Exiting")
+            quit()
+        instruction_interpreter.load_rom(rom)
+        nonlocal title
+        title = rom.split("/")[-1].removesuffix(".ch8")
+        logger.info(f"Loaded ROM-file {rom}")
+        reset_rom(instruction_interpreter, screen)
+
+    def set_cpu_rate(value, difficulty):
+        print("Setting not implemented")
+
     screen = Screen()
     keyboard = HexKeyboard()
     sound = Sound()
-    clock = pygame.time.Clock()
 
     ii = InstructionInterpreter(screen, keyboard)
-    ii.load_rom(rom)
-    title = rom.split("/")[-1].removesuffix(".ch8")
+    open_rom_file(ii, screen)
 
+    theme = pygame_menu.themes.Theme(background_color=(70,30,20),
+                                     title_background_color=(50,30,20),
+                                     widget_font=pygame_menu.font.FONT_DIGITAL,
+                                     title_font_size=1,
+                                     widget_font_size=14)
+    menu = pygame_menu.Menu(screen.MENU_HEIGHT, screen.DISPLAY.get_width(), '',
+                           theme=theme,
+                           joystick_enabled=False,
+                           keyboard_enabled=False,
+                           position=(0,0),
+                           columns=5,
+                           rows=1,
+                           mouse_motion_selection=True
+                           )
+
+    menu.add_button('Reset ROM', reset_rom, ii, screen)
+    menu.add_button('Load ROM', open_rom_file, ii, screen)
+    menu.add.selector('CPU :', [('600Hz', 600),
+                                ('1200Hz', 1200),
+                                ('6000Hz', 6000)], onchange=set_cpu_rate)
+
+    logger.info(f"Running main loop")
+    clock = pygame.time.Clock()
     while True:
+        menu.mainloop(screen.DISPLAY, bgfun=None, clear_surface=False, disable_loop=True)
+        screen.spin()
         clock.tick(60)  # run at 60 fps
 
         if screen.paused:
