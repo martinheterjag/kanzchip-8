@@ -71,8 +71,8 @@ def main():
                             )
     menu.add.button('Reset ROM', reset_rom)
     menu.add.button('Load ROM', open_rom_file)
-    menu.add.selector('CPU :', [('600Hz', 600),
-                                ('900hz', 900),
+    menu.add.selector('CPU :', [(' 600Hz', 600),
+                                (' 900hz', 900),
                                 ('1200Hz', 1200),
                                 ('6000Hz', 6000)],
                       onchange=set_cpu_rate, align=pygame_menu.locals.ALIGN_LEFT)
