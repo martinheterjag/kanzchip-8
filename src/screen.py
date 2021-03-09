@@ -38,7 +38,7 @@ class Screen:
         # Redraw screen
         for y in range(32):
             for x in range(64):
-                if self.pixel_matrix[x][y] == True:
+                if self.pixel_matrix[x][y]:
                     self.draw_pixel(x, y, self.WHITE)
                 else:
                     self.draw_pixel(x, y, self.BLACK)
@@ -55,7 +55,6 @@ class Screen:
 
     def set_pixel(self, x, y):
         self.pixel_matrix[x][y] = True
-
 
     def clear_pixel(self, x, y):
         self.pixel_matrix[x][y] = False
