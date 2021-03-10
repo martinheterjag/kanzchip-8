@@ -23,7 +23,7 @@ class Screen:
 
         self.paused = False
 
-        self.pixel_matrix = [[False] * 32 for i in range(64)]
+        self.pixel_matrix = [[0] * 32 for _ in range(64)]
 
         logger.info("Screen initialized")
 
@@ -38,14 +38,14 @@ class Screen:
         # Redraw screen
         for y in range(32):
             for x in range(64):
-                if self.pixel_matrix[x][y]:
+                if self.pixel_matrix[x][y] == 1:
                     self.draw_pixel(x, y, self.WHITE)
                 else:
                     self.draw_pixel(x, y, self.BLACK)
         pygame.display.update()
 
     def get_pixel_state(self, x, y):
-        return self.pixel_matrix[x][y]
+        return self.pixel_matrix[x][y] == 1
 
     def draw_pixel(self, x, y, color):
         x = x * self.PIXEL_SIZE
@@ -54,10 +54,10 @@ class Screen:
                          (x, y, self.PIXEL_SIZE, self.PIXEL_SIZE))
 
     def set_pixel(self, x, y):
-        self.pixel_matrix[x][y] = True
+        self.pixel_matrix[x][y] = 1
 
     def clear_pixel(self, x, y):
-        self.pixel_matrix[x][y] = False
+        self.pixel_matrix[x][y] = 0
 
     def clear_all(self):
         for x in range(64):
