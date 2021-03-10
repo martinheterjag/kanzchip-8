@@ -24,12 +24,16 @@ def main():
         screen.clear_all()
         ii.reset()
 
-    def open_rom_file():
-        root = tk.Tk()
-        root.withdraw()
-        rom = filedialog.askopenfilename(initialdir="roms",
-                                         filetypes=(("ROM", "*.ch8"),
-                                                    ("All files", "*"),))
+    def open_rom_file(filename=""):
+        if filename == "":
+            root = tk.Tk()
+            root.withdraw()
+            rom = filedialog.askopenfilename(initialdir="roms",
+                                             filetypes=(("ROM", "*.ch8"),
+                                                        ("All files", "*"),))
+        else:
+            rom = filename
+
         if rom == "":
             logger.info("No rom selected!")
             logger.info("Exiting")
@@ -51,7 +55,7 @@ def main():
     sound = Sound()
 
     ii = InstructionInterpreter(screen, keyboard)
-    open_rom_file()
+    open_rom_file("roms/BC_test.ch8")
 
     theme = pygame_menu.themes.Theme(background_color=(70, 30, 20),
                                      title_background_color=(50, 30, 20),

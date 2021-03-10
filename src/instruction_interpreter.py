@@ -71,7 +71,7 @@ class InstructionInterpreter:
     def load_rom(self, filename):
         rom = open(filename, 'rb').read()
         for i, val in enumerate(rom):
-            self.memory[0x200 + i] = val
+            self.memory[PROGRAM_START + i] = val
         self.program_counter = PROGRAM_START
         logger.info(f"Loaded {filename} into memory")
 
