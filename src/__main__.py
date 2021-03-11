@@ -91,7 +91,6 @@ def main():
                       onchange=set_volume, default=4,
                       align=pygame_menu.locals.ALIGN_CENTER)
 
-
     logger.info(f"Running main loop")
     clock = pygame.time.Clock()
     while True:

@@ -1,7 +1,9 @@
 # Copyright (C) 2021 authors of kanzchip-8, licenced under MIT licence
 
 import pygame
+
 from src.log import logger
+
 
 class Sound():
     def __init__(self):
