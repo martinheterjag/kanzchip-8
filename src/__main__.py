@@ -44,11 +44,14 @@ def main():
         logger.info(f"Loaded ROM-file {rom}")
         reset_rom()
 
-    def set_cpu_rate(selected_value, hz):
+    def set_cpu_rate(selected_value, cpu_rate):
         nonlocal ticks_per_frame
-        ticks_per_frame = hz//60
-        logger.info(f"selected: {selected_value}, hz: {hz},"
-                    f"ticks_per_frame: {ticks_per_frame}")
+        ticks_per_frame = cpu_rate//60
+        logger.debug(f"Selected option: {selected_value}, CPU rate: {cpu_rate} Hz, "
+                     f"ticks per frame: {ticks_per_frame}")
+
+    def set_volume(selected_value, volume):
+        sound.volume = volume
 
     screen = Screen()
     keyboard = HexKeyboard()
@@ -68,24 +71,32 @@ def main():
                             joystick_enabled=False,
                             keyboard_enabled=False,
                             position=(0, 0),
-                            columns=3,
-                            column_min_width=(210, 400, 200),
+                            columns=6,
+                            column_min_width=(100, 100, 100, 100, 100, 100),
                             rows=1,
                             mouse_motion_selection=True
                             )
-    menu.add.button('Reset ROM', reset_rom)
-    menu.add.button('Load ROM', open_rom_file)
-    menu.add.selector('CPU :', [(' 600Hz', 600),
-                                (' 900hz', 900),
-                                ('1200Hz', 1200),
-                                ('6000Hz', 6000)],
-                      onchange=set_cpu_rate, align=pygame_menu.locals.ALIGN_LEFT)
+    menu.add.button('Reset ROM', reset_rom, align=pygame_menu.locals.ALIGN_CENTER)
+    menu.add.button('Load ROM', open_rom_file, align=pygame_menu.locals.ALIGN_CENTER)
+    menu.add.selector('CPU Rate :', [(' 600Hz', 600),
+                                     (' 900hz', 900),
+                                     ('1200Hz', 1200),
+                                     ('6000Hz', 6000)],
+                      onchange=set_cpu_rate, align=pygame_menu.locals.ALIGN_CENTER)
+    menu.add.selector('Sound Volume :', [('Mute', 0.0),
+                                         (' 25%', 0.25),
+                                         (' 50%', 0.5),
+                                         (' 75%', 0.75),
+                                         ('100%', 1.0)],
+                      onchange=set_volume, default=4,
+                      align=pygame_menu.locals.ALIGN_CENTER)
 
     logger.info(f"Running main loop")
     clock = pygame.time.Clock()
     while True:
         clock.tick(60)  # run at 60 fps
-        menu.mainloop(screen.DISPLAY, bgfun=None, clear_surface=False, disable_loop=True, fps_limit=0)
+        menu.mainloop(screen.DISPLAY, bgfun=None, clear_surface=False,
+                      disable_loop=True, fps_limit=0)
 
         if screen.paused:
             pygame.display.set_caption(f"{title}     PAUSED")
