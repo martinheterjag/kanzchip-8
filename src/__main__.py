@@ -44,11 +44,11 @@ def main():
         logger.info(f"Loaded ROM-file {rom}")
         reset_rom()
 
-    def set_cpu_rate(selected_value, hz):
+    def set_cpu_rate(selected_value, cpu_rate):
         nonlocal ticks_per_frame
-        ticks_per_frame = hz//60
-        logger.info(f"selected: {selected_value}, hz: {hz},"
-                    f"ticks_per_frame: {ticks_per_frame}")
+        ticks_per_frame = cpu_rate//60
+        logger.debug(f"Selected option: {selected_value}, CPU rate: {cpu_rate} Hz, "
+                     f"ticks per frame: {ticks_per_frame}")
 
     def set_volume(selected_value, volume):
         sound.volume = volume
