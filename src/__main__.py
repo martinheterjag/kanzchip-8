@@ -76,20 +76,20 @@ def main():
                             rows=1,
                             mouse_motion_selection=True
                             )
-    menu.add.button('Reset ROM', reset_rom)
-    menu.add.button('Load ROM', open_rom_file)
+    menu.add.button('Reset ROM', reset_rom, align=pygame_menu.locals.ALIGN_CENTER)
+    menu.add.button('Load ROM', open_rom_file, align=pygame_menu.locals.ALIGN_CENTER)
     menu.add.selector('CPU Rate :', [(' 600Hz', 600),
                                      (' 900hz', 900),
                                      ('1200Hz', 1200),
                                      ('6000Hz', 6000)],
-                      onchange=set_cpu_rate, align=pygame_menu.locals.ALIGN_LEFT)
+                      onchange=set_cpu_rate, align=pygame_menu.locals.ALIGN_CENTER)
     menu.add.selector('Sound Volume :', [('Mute', 0.0),
                                          (' 25%', 0.25),
                                          (' 50%', 0.5),
                                          (' 75%', 0.75),
                                          ('100%', 1.0)],
                       onchange=set_volume, default=4,
-                      align=pygame_menu.locals.ALIGN_LEFT)
+                      align=pygame_menu.locals.ALIGN_CENTER)
 
 
     logger.info(f"Running main loop")
