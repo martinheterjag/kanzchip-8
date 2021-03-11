@@ -1,4 +1,4 @@
-# Copyright authors of kanzchip-8, licenced under MIT licence
+# Copyright (C) 2021 authors of kanzchip-8, licenced under MIT licence
 
 """
 The keyboard is mapped to fit the pattern of a querty keyboard

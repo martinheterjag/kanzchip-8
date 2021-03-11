@@ -1,3 +1,5 @@
+# Copyright (C) 2021 authors of kanzchip-8, licenced under MIT licence
+
 import unittest
 from unittest.mock import Mock, patch
 
