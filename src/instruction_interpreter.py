@@ -327,6 +327,21 @@ class InstructionInterpreter:
         if instruction & 0xFF == 0x07:
             # Fx07 - LD Vx, DT
             self.reg_v[x] = self.reg_delay
+        elif instruction & 0xFF == 0x0A:
+            """
+            Fx0A - LD Vx, K
+            Wait for a key press, store the value of the key in Vx.
+
+            All execution stops until a key is pressed, then the value
+            of that key is stored in Vx.
+            """
+            keypress = False
+            for i in range(0x10):
+                if self.keyboard.is_pressed(i):
+                    self.reg_v[x] = i
+                    return
+            # Avoid continuing to next instruction until a key is pressed
+            self.program_counter -= 2
         elif instruction & 0xFF == 0x15:
             # Fx15 - LD DT, Vx
             self.reg_delay = self.reg_v[x]
@@ -337,47 +352,47 @@ class InstructionInterpreter:
             # Fx1E ADD I, Vx
             self.reg_i = (self.reg_i + self.reg_v[x]) & 0xFFFF
         elif instruction & 0xFF == 0x29:
-            '''
+            """
             Fx29 - LD F, Vx
             Set I = location of sprite for digit Vx.
 
             The value of I is set to the location for the hexadecimal sprite
             corresponding to the value of Vx.
-            '''
+            """
             # Digits are stored in memory 0, 5, 10 ...
             self.reg_i = self.reg_v[x] * 5
         elif instruction & 0xFF == 0x33:
-            '''
+            """
             Fx33 - LD B, Vx
             Store BCD representation of Vx in memory locations I, I+1, and I+2.
 
             The interpreter takes the decimal value of Vx, and places the
             hundreds digit in memory at location in I, the tens digit at
             location I+1, and the ones digit at location I+2.
-            '''
+            """
             digits = format(self.reg_v[x], "03d")
             self.memory[self.reg_i] = int(digits[0])  # Hundreds digit
             self.memory[self.reg_i + 1] = int(digits[1])  # Tens digit
             self.memory[self.reg_i + 2] = int(digits[2])  # Ones digit
 
         elif instruction & 0xFF == 0x55:
-            '''
+            """
             Fx55 - LD [I], Vx
             Store registers V0 through Vx in memory starting at location I.
 
             The interpreter copies the values of registers V0 through Vx into
             memory, starting at the address in I.
-            '''
+            """
             for i in range(0, x + 1):
                 self.memory[self.reg_i + i] = self.reg_v[i]
         elif instruction & 0xFF == 0x65:
-            '''
+            """
             Fx65 - LD Vx, [I]
             Read registers V0 through Vx from memory starting at location I.
 
             The interpreter reads values from memory starting at location I
             into registers V0 through Vx.
-            '''
+            """
             for i in range(0, x + 1):
                 self.reg_v[i] = self.memory[self.reg_i + i]
         else:
