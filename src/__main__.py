@@ -96,7 +96,8 @@ def main():
     clock = pygame.time.Clock()
     while True:
         clock.tick(60)  # run at 60 fps
-        menu.mainloop(screen.DISPLAY, bgfun=None, clear_surface=False, disable_loop=True, fps_limit=0)
+        menu.mainloop(screen.DISPLAY, bgfun=None, clear_surface=False,
+                      disable_loop=True, fps_limit=0)
 
         if screen.paused:
             pygame.display.set_caption(f"{title}     PAUSED")
