@@ -50,6 +50,9 @@ def main():
         logger.info(f"selected: {selected_value}, hz: {hz},"
                     f"ticks_per_frame: {ticks_per_frame}")
 
+    def set_volume(selected_value, volume):
+        sound.volume = volume
+
     screen = Screen()
     keyboard = HexKeyboard()
     sound = Sound()
@@ -68,18 +71,26 @@ def main():
                             joystick_enabled=False,
                             keyboard_enabled=False,
                             position=(0, 0),
-                            columns=3,
-                            column_min_width=(210, 400, 200),
+                            columns=6,
+                            column_min_width=(100, 100, 100, 100, 100, 100),
                             rows=1,
                             mouse_motion_selection=True
                             )
     menu.add.button('Reset ROM', reset_rom)
     menu.add.button('Load ROM', open_rom_file)
-    menu.add.selector('CPU :', [(' 600Hz', 600),
-                                (' 900hz', 900),
-                                ('1200Hz', 1200),
-                                ('6000Hz', 6000)],
+    menu.add.selector('CPU Rate :', [(' 600Hz', 600),
+                                     (' 900hz', 900),
+                                     ('1200Hz', 1200),
+                                     ('6000Hz', 6000)],
                       onchange=set_cpu_rate, align=pygame_menu.locals.ALIGN_LEFT)
+    menu.add.selector('Sound Volume :', [('Mute', 0.0),
+                                         (' 25%', 0.25),
+                                         (' 50%', 0.5),
+                                         (' 75%', 0.75),
+                                         ('100%', 1.0)],
+                      onchange=set_volume, default=4,
+                      align=pygame_menu.locals.ALIGN_LEFT)
+
 
     logger.info(f"Running main loop")
     clock = pygame.time.Clock()
