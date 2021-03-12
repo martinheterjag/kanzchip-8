@@ -29,12 +29,6 @@ class Screen:
 
     # Run spin in main loop to check for pygame events and update screen
     def spin(self):
-        for event in pygame.event.get():
-            if event.type == QUIT:
-                pygame.quit()
-                sys.exit()
-            elif event.type == KEYDOWN and event.key == pygame.K_ESCAPE:
-                self.paused = not self.paused
         # Redraw screen
         for y in range(32):
             for x in range(64):

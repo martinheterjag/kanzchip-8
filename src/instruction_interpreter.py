@@ -61,6 +61,7 @@ class InstructionInterpreter:
         self.program_counter = PROGRAM_START
         self.stack = [0] * 16
         self.stack_pointer = 0
+        self.screen.paused = False
 
     def next_instruction(self):
         instruction = self.memory[self.program_counter] << 8
