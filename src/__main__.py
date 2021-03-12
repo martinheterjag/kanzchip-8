@@ -1,5 +1,5 @@
 # Copyright (C) 2021 authors of kanzchip-8, licenced under MIT licence
-
+import sys
 import tkinter as tk
 from tkinter import filedialog
 
@@ -95,8 +95,18 @@ def main():
     clock = pygame.time.Clock()
     while True:
         clock.tick(60)  # run at 60 fps
-        menu.mainloop(screen.DISPLAY, bgfun=None, clear_surface=False,
-                      disable_loop=True, fps_limit=0)
+
+        events = pygame.event.get()
+        for event in events:
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                sys.exit()
+            elif event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
+                screen.paused = not screen.paused
+
+        if menu.is_enabled():
+            menu.draw(screen.DISPLAY)
+            menu.update(events)
 
         if screen.paused:
             pygame.display.set_caption(f"{title}     PAUSED")
