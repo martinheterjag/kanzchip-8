@@ -53,6 +53,10 @@ def main():
     def set_volume(selected_value, volume):
         sound.volume = volume
 
+    def set_shift_quirks(selected_value, setting):
+        ii.shift_quirks = setting
+        logger.debug(f"Selected shift_quirks: {selected_value}, {setting}")
+
     screen = Screen()
     keyboard = HexKeyboard()
     sound = Sound()
@@ -89,6 +93,10 @@ def main():
                                          (' 75%', 0.75),
                                          ('100%', 1.0)],
                       onchange=set_volume, default=4,
+                      align=pygame_menu.locals.ALIGN_CENTER)
+    menu.add.selector('Shift Quirks :', [('Off', False),
+                                         (' On', True)],
+                      onchange=set_shift_quirks, default=0,
                       align=pygame_menu.locals.ALIGN_CENTER)
 
     logger.info(f"Running main loop")

@@ -45,8 +45,7 @@ class InstructionInterpreter:
             self.memory[i] = byte
         logger.info("Fonts loaded in memory")
 
-        # TODO: Decide if this should be a setting or not?
-        self.CHIP_48 = False
+        self.shift_quirks = False
 
         self.screen = screen
         self.keyboard = keyboard
@@ -209,7 +208,7 @@ class InstructionInterpreter:
                 self.reg_v[0xF] = 1
         elif last_nibble == 0x6:  # SHR Vx {, Vy}
             # Vf shall be set to same value as the bit that is shifted out
-            if self.CHIP_48:
+            if self.shift_quirks:
                 self.reg_v[x] = self.reg_v[y]
             self.reg_v[0xF] = self.reg_v[x] & 0x0001
             self.reg_v[x] = self.reg_v[x] >> 1
@@ -223,7 +222,7 @@ class InstructionInterpreter:
                 self.reg_v[0xF] = 1
         elif last_nibble == 0xE:  # SHL Vx {, Vy}
             # Vf shall be set to same value as the bit that is shifted out
-            if self.CHIP_48:
+            if self.shift_quirks:
                 self.reg_v[x] = self.reg_v[y]
             self.reg_v[0xF] = (self.reg_v[x] & 0x80) >> 7
             self.reg_v[x] = (self.reg_v[x] << 1) % 0x100
