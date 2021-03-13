@@ -49,6 +49,7 @@ class InstructionInterpreter:
 
         self.screen = screen
         self.keyboard = keyboard
+        self.rom_loaded = False
         logger.info("InstructionInterpreter initialized")
 
     def reset(self):
@@ -63,6 +64,8 @@ class InstructionInterpreter:
         self.screen.paused = False
 
     def next_instruction(self):
+        if not self.rom_loaded:
+            return 0
         instruction = self.memory[self.program_counter] << 8
         instruction += self.memory[self.program_counter + 1]
         self.incr_pc()
@@ -73,6 +76,7 @@ class InstructionInterpreter:
         for i, val in enumerate(rom):
             self.memory[PROGRAM_START + i] = val
         self.program_counter = PROGRAM_START
+        self.rom_loaded = True
         logger.info(f"Loaded {filename} into memory")
 
     def incr_pc(self):
@@ -399,6 +403,9 @@ class InstructionInterpreter:
             logger.warning(f"OpCode {instruction:X} not yet supported ")
 
     def interpret_instruction(self, instruction):
+        if not self.rom_loaded:
+            pass
+
         if instruction < 0x00:
             logger.error(f"Trying to pass a negative value {instruction:X} as instruction")
             return

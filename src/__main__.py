@@ -62,7 +62,6 @@ def main():
     sound = Sound()
 
     ii = InstructionInterpreter(screen, keyboard)
-    open_rom_file(filename="roms/BC_test.ch8")
 
     theme = pygame_menu.themes.Theme(background_color=(70, 30, 20),
                                      title_background_color=(50, 30, 20),
@@ -116,8 +115,9 @@ def main():
             menu.draw(screen.DISPLAY)
             menu.update(events)
 
-        if screen.paused:
-            pygame.display.set_caption(f"{title}     PAUSED")
+        if screen.paused or not ii.rom_loaded:
+            caption = "Load a rom" if not ii.rom_loaded else "PAUSED"
+            pygame.display.set_caption(f"{title}     {caption}")
             screen.spin()
             continue
 
