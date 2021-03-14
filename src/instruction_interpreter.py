@@ -49,6 +49,7 @@ class InstructionInterpreter:
 
         self.screen = screen
         self.keyboard = keyboard
+        self.rom_loaded = False
         logger.info("InstructionInterpreter initialized")
 
     def reset(self):
@@ -73,6 +74,7 @@ class InstructionInterpreter:
         for i, val in enumerate(rom):
             self.memory[PROGRAM_START + i] = val
         self.program_counter = PROGRAM_START
+        self.rom_loaded = True
         logger.info(f"Loaded {filename} into memory")
 
     def incr_pc(self):
