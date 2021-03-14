@@ -64,8 +64,6 @@ class InstructionInterpreter:
         self.screen.paused = False
 
     def next_instruction(self):
-        if not self.rom_loaded:
-            return 0
         instruction = self.memory[self.program_counter] << 8
         instruction += self.memory[self.program_counter + 1]
         self.incr_pc()
@@ -403,9 +401,6 @@ class InstructionInterpreter:
             logger.warning(f"OpCode {instruction:X} not yet supported ")
 
     def interpret_instruction(self, instruction):
-        if not self.rom_loaded:
-            pass
-
         if instruction < 0x00:
             logger.error(f"Trying to pass a negative value {instruction:X} as instruction")
             return
