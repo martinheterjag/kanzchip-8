@@ -99,7 +99,7 @@ def main():
                       onchange=set_shift_quirks, default=0,
                       align=pygame_menu.locals.ALIGN_CENTER)
 
-    logger.info(f"Running main loop")
+    logger.info("Running main loop")
     clock = pygame.time.Clock()
     while True:
         clock.tick(60)  # run at 60 fps

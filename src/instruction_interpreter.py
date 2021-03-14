@@ -335,7 +335,6 @@ class InstructionInterpreter:
             All execution stops until a key is pressed, then the value
             of that key is stored in Vx.
             """
-            keypress = False
             for i in range(0x10):
                 if self.keyboard.is_pressed(i):
                     self.reg_v[x] = i

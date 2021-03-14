@@ -195,14 +195,6 @@ class TestInstructions(unittest.TestCase):
         self.assertEqual(self.ii.reg_v[0xE], 0xFF)
         self.assertEqual(self.ii.reg_v[0xF], 0x00)
 
-    def test_8xyE_shl_vx_vy_with_carry(self):
-        self.ii.reg_v[0x0] = 0b01000000
-        self.ii.reg_v[0x1] = 0b11000001
-        self.ii.interpret_instruction(0x801E)
-        self.assertEqual(self.ii.reg_v[0x0], 0b10000010)
-        self.assertEqual(self.ii.reg_v[0xF], 0x01)
-
-
     def test_8xyE_shl_vx_vy_no_carry(self):
         self.ii.reg_v[0x0] = 0b01000000
         self.ii.interpret_instruction(0x801E)
