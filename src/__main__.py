@@ -38,8 +38,7 @@ def main() -> None:
 
         if rom == "":
             logger.info("No rom selected!")
-            logger.info("Exiting")
-            quit()
+            return
         ii.load_rom(rom)
         nonlocal title
         title = rom.split("/")[-1].removesuffix(".ch8")
