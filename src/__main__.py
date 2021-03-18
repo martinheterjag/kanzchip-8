@@ -32,6 +32,7 @@ def main() -> None:
                 initialdir="roms",
                 filetypes=(("ROM", "*.ch8"), ("All files", "*"),)
             )
+            root.destroy()
         else:
             rom = filename
 
