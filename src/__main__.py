@@ -3,6 +3,8 @@ import sys
 import tkinter as tk
 from tkinter import filedialog
 
+import argparse
+import logging
 import pygame
 import pygame_menu
 
@@ -16,7 +18,16 @@ VERSION = "0.0.1"
 
 
 def main() -> None:
+    parser = argparse.ArgumentParser()
+    parser.add_argument("-d", "--debug", action="store_true",
+                        help="Set log severity to debug.")
+
+    args = parser.parse_args()
+    if args.debug:
+        logger.setLevel(logging.DEBUG)
+
     logger.info(f"--- kanzchip-8, chip-8 emulator version {VERSION} ---")
+
     title = ""
     ticks_per_frame = 10
 
