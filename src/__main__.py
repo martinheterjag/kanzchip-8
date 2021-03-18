@@ -14,7 +14,7 @@ from src.log import logger
 from src.screen import Screen
 from src.sound import Sound
 
-VERSION = "0.0.1"
+VERSION = "1.0.0"
 
 
 def main() -> None:
