@@ -1,20 +1,19 @@
 # Copyright (C) 2021 authors of kanzchip-8, licenced under MIT licence
+import argparse
+import logging
 import sys
 import tkinter as tk
 from tkinter import filedialog
 
-import argparse
-import logging
 import pygame
 import pygame_menu
 
+from src import __version__
 from src.hex_keyboard import HexKeyboard
 from src.instruction_interpreter import InstructionInterpreter
 from src.log import logger
 from src.screen import Screen
 from src.sound import Sound
-
-VERSION = "1.0.0"
 
 
 def main() -> None:
@@ -26,7 +25,7 @@ def main() -> None:
     if args.debug:
         logger.setLevel(logging.DEBUG)
 
-    logger.info(f"--- kanzchip-8, chip-8 emulator version {VERSION} ---")
+    logger.info(f"--- kanzchip-8, chip-8 emulator version {__version__} ---")
 
     title = ""
     ticks_per_frame = 10
