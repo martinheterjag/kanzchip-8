@@ -5,8 +5,8 @@ import pygame
 from src.log import logger
 
 
-class Sound():
-    def __init__(self):
+class Sound:
+    def __init__(self) -> None:
         self.volume = 0.75
         pygame.mixer.init()
         square_wave = bytearray([128] * 400 + [0] * 400)
@@ -15,8 +15,8 @@ class Sound():
         self.sound.set_volume(0.0)
         logger.info("Sound initialized")
 
-    def buzzer_on(self):
+    def buzzer_on(self) -> None:
         self.sound.set_volume(self.volume)
 
-    def buzzer_off(self):
+    def buzzer_off(self) -> None:
         self.sound.set_volume(0.0)

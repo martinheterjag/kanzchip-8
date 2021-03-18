@@ -3,10 +3,10 @@
 import logging
 
 
-def setup_custom_logger(name):
-    FORMAT = ("%(asctime)s - %(levelname)s %(filename)s " +
-              "%(funcName)s %(lineno)d: %(message)s")
-    formatter = logging.Formatter(fmt=FORMAT)
+def setup_custom_logger(name: str) -> logging.Logger:
+    custom_format = ("%(asctime)s - %(levelname)s %(filename)s " +
+                     "%(funcName)s %(lineno)d: %(message)s")
+    formatter = logging.Formatter(fmt=custom_format)
 
     handler = logging.StreamHandler()
     handler.setFormatter(formatter)

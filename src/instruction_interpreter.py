@@ -2,7 +2,9 @@
 
 import random
 
+from src.hex_keyboard import HexKeyboard
 from src.log import logger
+from src.screen import Screen
 
 FONTS = (
     0xF0, 0x90, 0x90, 0x90, 0xF0,  # 0
@@ -27,15 +29,15 @@ PROGRAM_START = 0x200
 
 
 class InstructionInterpreter:
-    def __init__(self, screen, keyboard):
+    def __init__(self, screen: Screen, keyboard: HexKeyboard) -> None:
         # Allocate memory for all registers
-        self.reg_v = [0] * 16     # Vx where x is 0-15, 8.bit registers
-        self.reg_i = 0            # 16-bit register
-        self.reg_delay = 0        # 8-bit timer
-        self.reg_sound = 0        # 8-bit timer
+        self.reg_v: list[int] = [0] * 16  # Vx where x is 0-15, 8.bit registers
+        self.reg_i = 0  # 16-bit register
+        self.reg_delay = 0  # 8-bit timer
+        self.reg_sound = 0  # 8-bit timer
         self.program_counter = 0  # 16-bit PC
-        self.stack = [0] * 16     # 16-bit array
-        self.stack_pointer = 0    # 8-bit
+        self.stack: list[int] = [0] * 16  # 16-bit array
+        self.stack_pointer = 0  # 8-bit
 
         # Memory is 0x000 - 0xFFF (4095). 0x000-0x1FF is reserved.
         # Most programs start at 0x200
@@ -52,7 +54,7 @@ class InstructionInterpreter:
         self.rom_loaded = False
         logger.info("InstructionInterpreter initialized")
 
-    def reset(self):
+    def reset(self) -> None:
         # Reset all registers
         self.reg_v = [0] * 16
         self.reg_i = 0
@@ -63,13 +65,13 @@ class InstructionInterpreter:
         self.stack_pointer = 0
         self.screen.paused = False
 
-    def next_instruction(self):
+    def next_instruction(self) -> int:
         instruction = self.memory[self.program_counter] << 8
         instruction += self.memory[self.program_counter + 1]
         self.incr_pc()
         return instruction
 
-    def load_rom(self, filename):
+    def load_rom(self, filename: str) -> None:
         rom = open(filename, 'rb').read()
         for i, val in enumerate(rom):
             self.memory[PROGRAM_START + i] = val
@@ -77,14 +79,14 @@ class InstructionInterpreter:
         self.rom_loaded = True
         logger.info(f"Loaded {filename} into memory")
 
-    def incr_pc(self):
+    def incr_pc(self) -> None:
         self.program_counter += 2
         # Emulate 16 bit register rollover
         if self.program_counter > 0xFFFF:
             logger.warning("program counter rollover")
             self.program_counter = 0
 
-    def interpret_group_0(self, instruction):
+    def interpret_group_0(self, instruction: int) -> None:
         # 00E0 and 00EE, rest can be ignored.
         if instruction == 0x00E0:  # CLS
             self.screen.clear_all()
@@ -94,7 +96,7 @@ class InstructionInterpreter:
         else:
             logger.warning(f"OpCode {instruction:X} not supported!")
 
-    def jump(self, instruction):
+    def jump(self, instruction: int) -> None:
         """
         1nnn - JP addr
         Jump to location nnn.
@@ -103,7 +105,7 @@ class InstructionInterpreter:
         """
         self.program_counter = instruction & 0x0FFF
 
-    def call(self, instruction):
+    def call(self, instruction: int) -> None:
         """
         2nnn - CALL addr
         Call subroutine at nnn.
@@ -116,7 +118,7 @@ class InstructionInterpreter:
         self.stack[self.stack_pointer] = self.program_counter
         self.program_counter = instruction & 0x0FFF
 
-    def skip_if_equal(self, instruction):
+    def skip_if_equal(self, instruction: int) -> None:
         """
         3xkk - SE Vx, byte
         Skip next instruction if Vx = kk.
@@ -129,7 +131,7 @@ class InstructionInterpreter:
         if self.reg_v[x] == kk:
             self.incr_pc()
 
-    def skip_if_not_equal(self, instruction):
+    def skip_if_not_equal(self, instruction: int) -> None:
         """
         4xkk - SNE Vx, byte
         Skip next instruction if Vx != kk.
@@ -142,7 +144,7 @@ class InstructionInterpreter:
         if self.reg_v[x] != kk:
             self.incr_pc()
 
-    def skip_if_vx_equal_vy(self, instruction):
+    def skip_if_vx_equal_vy(self, instruction: int) -> None:
         """
         5xy0 - SE Vx, Vy
         Skip next instruction if Vx = Vy.
@@ -155,7 +157,7 @@ class InstructionInterpreter:
         if self.reg_v[x] == self.reg_v[y]:
             self.incr_pc()
 
-    def set_vx_to_kk(self, instruction):
+    def set_vx_to_kk(self, instruction: int) -> None:
         """
         6xkk - LD Vx, byte
         Set Vx = kk.
@@ -166,7 +168,7 @@ class InstructionInterpreter:
         kk = instruction & 0x00FF
         self.reg_v[x] = kk
 
-    def add_kk_to_vx(self, instruction):
+    def add_kk_to_vx(self, instruction: int) -> None:
         """
         7xkk - ADD Vx, byte
         Set Vx = Vx + kk.
@@ -177,7 +179,7 @@ class InstructionInterpreter:
         kk = instruction & 0x00FF
         self.reg_v[x] = (self.reg_v[x] + kk) & 0x00FF  # discard extra bits
 
-    def interpret_group_8(self, instruction):
+    def interpret_group_8(self, instruction: int) -> None:
         # Logic and arithmetic operations between Vx and Vy
         x = (instruction & 0x0F00) >> 8
         y = (instruction & 0x00F0) >> 4
@@ -231,7 +233,7 @@ class InstructionInterpreter:
         else:
             logger.warning(f"OpCode {instruction:X} supported ")
 
-    def skip_if_vx_not_equal_vy(self, instruction):
+    def skip_if_vx_not_equal_vy(self, instruction: int) -> None:
         """
         9xy0 - SNE Vx, Vy
         Skip next instruction if Vx != Vy.
@@ -244,7 +246,7 @@ class InstructionInterpreter:
         if self.reg_v[x] != self.reg_v[y]:
             self.incr_pc()
 
-    def set_index_to_nnn(self, instruction):
+    def set_index_to_nnn(self, instruction: int) -> None:
         """
         Annn - LD I, addr
         Set I = nnn.
@@ -254,7 +256,7 @@ class InstructionInterpreter:
         nnn = instruction & 0x0FFF
         self.reg_i = nnn
 
-    def jump_with_offset(self, instruction):
+    def jump_with_offset(self, instruction: int) -> None:
         """
         Bnnn - JP V0, addr
         Jump to location nnn + V0.
@@ -264,7 +266,7 @@ class InstructionInterpreter:
         nnn = instruction & 0x0FFF
         self.program_counter = nnn + self.reg_v[0x0]
 
-    def random(self, instruction):
+    def random(self, instruction: int) -> None:
         """
         Cxkk - RND Vx, byte
         Set Vx = random byte AND kk.
@@ -276,7 +278,7 @@ class InstructionInterpreter:
         kk = instruction & 0x00FF
         self.reg_v[x] = random.randint(0, 255) & kk
 
-    def draw(self, instruction):
+    def draw(self, instruction: int) -> None:
         """
         Dxyn - DRW Vx, Vy, nibble
         Display n-byte sprite starting at memory location I
@@ -311,7 +313,7 @@ class InstructionInterpreter:
 
             y_coord += 1
 
-    def interpret_group_E(self, instruction):
+    def interpret_group_e(self, instruction: int) -> None:
         x = (instruction & 0x0F00) >> 8
         if instruction & 0x00FF == 0x9E:
             # Ex9E - SKP Vx
@@ -324,7 +326,7 @@ class InstructionInterpreter:
         else:
             logger.warning(f"OpCode {instruction:X} is not supported ")
 
-    def interpret_group_F(self, instruction):
+    def interpret_group_f(self, instruction: int) -> None:
         x = (instruction & 0x0F00) >> 8
         if instruction & 0xFF == 0x07:
             # Fx07 - LD Vx, DT
@@ -399,7 +401,7 @@ class InstructionInterpreter:
         else:
             logger.warning(f"OpCode {instruction:X} not yet supported ")
 
-    def interpret_instruction(self, instruction):
+    def interpret_instruction(self, instruction: int) -> None:
         if instruction < 0x00:
             logger.error(f"Trying to pass a negative value {instruction:X} as instruction")
             return
@@ -453,7 +455,7 @@ class InstructionInterpreter:
             self.draw(instruction)
         elif instruction & 0xF000 == 0xE000:
             # SKP, SKNP
-            self.interpret_group_E(instruction)
+            self.interpret_group_e(instruction)
         elif instruction & 0xF000 == 0xF000:
             # A lot of different LD variants + ADD (I, Vx)
-            self.interpret_group_F(instruction)
+            self.interpret_group_f(instruction)

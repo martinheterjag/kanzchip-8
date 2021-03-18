@@ -6,31 +6,32 @@ from tkinter import filedialog
 import pygame
 import pygame_menu
 
+from src.hex_keyboard import HexKeyboard
 from src.instruction_interpreter import InstructionInterpreter
 from src.log import logger
 from src.screen import Screen
 from src.sound import Sound
-from src.hex_keyboard import HexKeyboard
 
 VERSION = "0.0.1"
 
 
-def main():
+def main() -> None:
     logger.info(f"--- kanzchip-8, chip-8 emulator version {VERSION} ---")
     title = ""
     ticks_per_frame = 10
 
-    def reset_rom():
+    def reset_rom() -> None:
         screen.clear_all()
         ii.reset()
 
-    def open_rom_file(filename=""):
+    def open_rom_file(filename: str = "") -> None:
         if filename == "":
             root = tk.Tk()
             root.withdraw()
-            rom = filedialog.askopenfilename(initialdir="roms",
-                                             filetypes=(("ROM", "*.ch8"),
-                                                        ("All files", "*"),))
+            rom: str = filedialog.askopenfilename(
+                initialdir="roms",
+                filetypes=(("ROM", "*.ch8"), ("All files", "*"),)
+            )
         else:
             rom = filename
 
@@ -44,16 +45,16 @@ def main():
         logger.info(f"Loaded ROM-file {rom}")
         reset_rom()
 
-    def set_cpu_rate(selected_value, cpu_rate):
+    def set_cpu_rate(selected_value: str, cpu_rate: int) -> None:
         nonlocal ticks_per_frame
-        ticks_per_frame = cpu_rate//60
+        ticks_per_frame = cpu_rate // 60
         logger.debug(f"Selected option: {selected_value}, CPU rate: {cpu_rate} Hz, "
                      f"ticks per frame: {ticks_per_frame}")
 
-    def set_volume(selected_value, volume):
+    def set_volume(_: str, volume: float) -> None:
         sound.volume = volume
 
-    def set_shift_quirks(selected_value, setting):
+    def set_shift_quirks(selected_value: str, setting: bool) -> None:
         ii.shift_quirks = setting
         logger.debug(f"Selected shift_quirks: {selected_value}, {setting}")
 
@@ -133,7 +134,7 @@ def main():
         # Run 10 instructions per frame to simulate 600hz
         # Most CHIP-8 interpreters ran at about 500-1000hz,
         # Could make this configurable
-        for tick in range(ticks_per_frame):
+        for _ in range(ticks_per_frame):
             instruction = ii.next_instruction()
             ii.interpret_instruction(instruction)
 

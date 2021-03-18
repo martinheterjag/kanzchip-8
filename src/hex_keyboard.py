@@ -17,7 +17,7 @@ from src.log import logger
 
 
 class HexKeyboard:
-    def __init__(self):
+    def __init__(self) -> None:
         self.hex_pygame_key_map = {
             0x1: pygame.K_1,
             0x2: pygame.K_2,
@@ -38,7 +38,7 @@ class HexKeyboard:
         }
         logger.info("Keyboard Initialized")
 
-    def is_pressed(self, hex_key):
+    def is_pressed(self, hex_key: int) -> bool:
         if hex_key > 0xF or hex_key < 0x0:
             logger.error(f"Invalid key {hex_key:X}")
             return False
